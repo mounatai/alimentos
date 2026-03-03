@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -24,7 +25,9 @@
             --kv-width: 130px;
         }
 
-        html { font-size: 16px }
+        html {
+            font-size: 16px
+        }
 
         body {
             margin: 0;
@@ -39,145 +42,923 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 16px }
-        h2 { margin: 14px 0 8px; font-size: var(--head-fz) }
-        .tabs-header { display: flex; gap: 12px; margin-bottom: 20px; border-bottom: 2px solid var(--line); }
-        .tab-button { background: transparent; border: none; padding: 12px 20px; cursor: pointer; font-size: 1em; font-weight: 700; color: var(--muted); border-bottom: 3px solid transparent; transition: color .15s, border-color .15s; margin-bottom: -2px; }
-        .tab-button.active { color: var(--gold); border-bottom-color: var(--gold); }
-        .tab-button:hover { color: var(--dark); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .top { display: flex; justify-content: center; gap: 12px; align-items: stretch; flex-wrap: wrap }
-        .card { background: linear-gradient(180deg, var(--panel) 0%, var(--panel2) 100%); border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-width: 280px; flex: 1 1 360px; box-shadow: var(--shadow); }
-        .card h2 { margin: 0 0 10px; display: flex; align-items: center; gap: 8px; font-weight: 800 }
-        .foodicon { font-size: 1.1em; margin-right: 6px }
-        .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--kv-gap); align-items: start }
-        .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--kv-gap); align-items: start }
-        .kv { border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: rgba(135, 206, 235, .04); font-size: var(--mini-fz); width: var(--kv-width); box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 0; }
-        .kv input, .kv select { width: 100%; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(44, 44, 44, .14); background: #fff; color: var(--text); outline: none; font-size: .98em; box-sizing: border-box; min-height: 36px; }
-        .kv input[type="number"]::-webkit-outer-spin-button, .kv input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .kv input[type="number"] { -moz-appearance: textfield; }
-        .kv input:focus, .kv select:focus { border-color: rgba(212, 175, 55, .95); box-shadow: 0 0 0 3px rgba(212, 175, 55, .10); }
-        .kv label { color: var(--muted); font-size: .72em; margin: 0; line-height: 1.05; text-align: center; font-weight: 700; padding: 0 4px; width: 100%; box-sizing: border-box }
-        .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: center }
-        .muted { color: var(--muted) }
-        .small { font-size: .95em }
-        .summary-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 7.2px; border-radius: 14px; min-width: 108px; background: linear-gradient(180deg, #fff 0%, rgba(212, 175, 55, .08) 100%); border: 1px solid var(--line); box-shadow: var(--shadow); }
-        .summary-box .value { font-size: 26px; font-weight: 900; margin-bottom: 4px; color: var(--dark) }
-        .summary-box label { font-size: .63em; color: var(--muted); margin: 0; text-align: center }
-        .summary-box.deficit .value { color: #d00; }
-        table { width: 100%; border-collapse: collapse; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; font-size: .97em; }
-        th, td { padding: 9px 10px; border-bottom: 1px solid var(--line); font-size: inherit }
-        th { text-align: left; color: rgba(44, 44, 44, .75); background: rgba(135, 206, 235, .06); font-weight: 800; font-size: .76em; text-transform: uppercase; letter-spacing: .03em; }
-        .card[data-meal] th { font-size: .72em; }
-        table tbody tr:hover { background: rgba(135, 206, 235, .05) }
-        tr:last-child td { border-bottom: none }
-        .right { text-align: right }
-        .totals td { font-weight: 900; background: rgba(212, 175, 55, .06) }
-        .actions { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin: 0 0 6px; flex-wrap: wrap; }
-        .actions h2 { margin: 0; }
-        .food-controls { display: flex; gap: 8px; align-items: center; }
-        button { border: none; background: linear-gradient(180deg, #fff 0%, rgba(212, 175, 55, .08) 100%); color: var(--dark); padding: 8px 10px; border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 1.02em; line-height: 1; display: inline-flex; align-items: center; justify-content: center; transition: background .15s, transform .06s; }
-        button:active { transform: translateY(1px) }
-        button:focus { outline: 2px solid rgba(212, 175, 55, .22) }
-        .btn-add { font-size: 1.12em; min-width: 36px; height: 36px; width: 36px; padding: 0; background: var(--gold); color: #fff; font-weight: 900; border: 1px solid rgba(212, 175, 55, .35); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .btn-add:hover { background: #b8962e }
-        .btn-del { background: transparent; color: #a00; border: none; font-size: 0.525em; padding: 0 3px; height: 14px; width: 14px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; }
-        .btn-del:hover { background: rgba(212, 175, 55, .08); color: #d00 }
-        .btn-save { font-size: 1.2em; background: transparent; color: var(--gold); padding: 6px; height: 32px; width: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; margin-left: 4px; transition: background .15s; }
-        .btn-save:hover { background: rgba(212, 175, 55, .15); color: #b8962e; }
-        select.foodSelect { font-size: 95%; transform: scale(var(--dropdown-scale)); min-width: 110px; width: 180px; max-width: 240px; padding-left: 10px; padding-right: 8px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, .22); background: #fff; min-height: 36px; }
-        .status { margin-top: 6px; color: var(--muted); font-size: .95em }
-        .meals { margin-top: 12px; display: grid; gap: 12px }
-        @media(min-width:880px) { .meals { grid-template-columns: 1fr 1fr } }
-        .tracker-top { display: grid; gap: 12px; margin-bottom: 12px; }
-        .graph-slot { min-height: 120px; border: 1px dashed var(--line); color: var(--muted); font-weight: 700; padding: 12px; box-sizing: border-box; }
-        .graph-slot h3 { margin: 0 0 8px; font-size: .95em; color: var(--dark); }
-        .chart-wrap { position: relative; width: 100%; height: 220px; }
-        #historyChart { width: 100%; height: 100%; display: block; }
-        .chart-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: .9em; text-align: center; }
-        .chart-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; font-size: .82em; color: var(--muted); }
-        .chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
-        .chart-legend i { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
-        @media(min-width:880px) { .tracker-top { grid-template-columns: 1fr 1fr; align-items: start; } }
-        .card[data-meal] { position: relative }
-        .card[data-meal]::before { content: ""; position: absolute; left: 0; top: 0; width: 5px; height: 100%; background: var(--olive); border-radius: 14px 0 0 14px; opacity: .22; }
-        .mealBody input[type="number"] { width: 100px; max-width: 100%; border-radius: 8px; border: 1px solid rgba(44, 44, 44, .20); padding: 6px 8px; font-size: 98%; min-height: 34px; }
-        .mealBody input[type="number"]::-webkit-outer-spin-button, .mealBody input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .mealBody input[type="number"] { -moz-appearance: textfield; }
-        .mealBody input[type="number"]:focus { border-color: rgba(212, 175, 55, .95); box-shadow: 0 0 0 3px rgba(212, 175, 55, .10); outline: none; }
-        .history-container { margin-top: 20px; }
-        .history-list { max-height: 500px; overflow-y: auto; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
-        .history-item { padding: 14px 16px; border-bottom: 1px solid var(--line); cursor: pointer; transition: background .15s; display: flex; justify-content: space-between; align-items: center; }
-        .history-item:last-child { border-bottom: none; }
-        .history-item:hover { background: rgba(135, 206, 235, .03); }
-        .history-item-info { flex: 1; }
-        .history-item-date { font-weight: 800; color: var(--dark); font-size: 1em; }
-        .history-item-time { font-size: .9em; color: var(--muted); margin-top: 2px; }
-        .history-item-stats { font-size: .85em; color: var(--muted); margin-top: 4px; }
-        .history-item-actions { display: flex; gap: 8px; margin-left: 12px; }
-        .btn-view { background: transparent; color: var(--gold); border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: .9em; font-weight: 700; transition: background .15s; }
-        .btn-view:hover { background: rgba(212, 175, 55, .15); }
-        .btn-delete { background: transparent; color: #a00; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: .9em; font-weight: 700; transition: background .15s; }
-        .btn-delete:hover { background: rgba(212, 175, 55, .08); color: #d00; }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); animation: fadeIn .2s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .modal-content { background-color: var(--cream); margin: 10% auto; padding: 20px; border: 1px solid var(--line); border-radius: 14px; max-width: 700px; max-height: 80vh; overflow-y: auto; box-shadow: var(--shadow); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
-        .modal-header h3 { margin: 0; font-size: 1.2em; }
-        .close-modal { background: transparent; border: none; font-size: 1.5em; color: var(--muted); cursor: pointer; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; }
-        .close-modal:hover { color: var(--dark); }
-        .empty-state { padding: 40px 20px; text-align: center; color: var(--muted); }
-        .empty-state-icon { font-size: 3em; margin-bottom: 12px; }
-        .db-header { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
-        .db-search { flex: 1; min-width: 200px; }
-        .db-search input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); font-size: 1em; box-sizing: border-box; }
-        .db-search input:focus { border-color: rgba(212, 175, 55, .95); box-shadow: 0 0 0 3px rgba(212, 175, 55, .10); outline: none; }
-        .food-list { max-height: 600px; overflow-y: auto; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
-        .food-item { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
-        .food-item:last-child { border-bottom: none; }
-        .food-item:hover { background: rgba(135, 206, 235, .03); }
-        .food-item-info { flex: 1; }
-        .food-item-name { font-weight: 800; color: var(--dark); margin-bottom: 6px; }
-        .food-item-macros { font-size: .9em; color: var(--muted); }
-        .food-item-actions { display: flex; gap: 8px; margin-left: 12px; }
-        .btn-edit { background: transparent; color: var(--gold); border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: .9em; font-weight: 700; transition: background .15s; }
-        .btn-edit:hover { background: rgba(212, 175, 55, .15); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 12px; }
-        .form-group { display: flex; flex-direction: column; }
-        .form-group label { font-size: .9em; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
-        .form-group input { padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); font-size: 1em; box-sizing: border-box; }
-        .form-group input:focus { border-color: rgba(212, 175, 55, .95); box-shadow: 0 0 0 3px rgba(212, 175, 55, .10); outline: none; }
-        .form-actions { display: flex; gap: 12px; margin-top: 16px; }
-        .btn-primary { background: var(--gold); color: #fff; padding: 10px 16px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; flex: 1; }
-        .btn-primary:hover { background: #b8962e; }
-        .btn-secondary { background: transparent; color: var(--muted); padding: 10px 16px; border-radius: 10px; border: 1px solid var(--line); font-weight: 700; cursor: pointer; flex: 1; }
-        .btn-secondary:hover { background: rgba(135, 206, 235, .05); color: var(--dark); }
-        
-        #foodFormSection { order: -1; margin: 0 0 20px 0 !important; }
-        .db-container { display: flex; flex-direction: column; }
-        .config-footer { display: flex; align-items: center; gap: 8px; justify-content: center; margin-top: 16px; }
-        .summary-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: center; margin-bottom: 10px; }
-        
-        @media (max-width:600px) {
-            .top { flex-direction: column }
-            .kv { width: 100% }
-            .grid2 { grid-template-columns: 1fr }
-            .grid3 { grid-template-columns: 1fr }
-            select.foodSelect { width: 100%; transform: none }
-            .summary-box { min-width: 100% }
-            .food-item { flex-direction: column; align-items: flex-start; }
-            .food-item-actions { margin-left: 0; margin-top: 12px; width: 100%; }
-            .form-grid { grid-template-columns: 1fr; }
-            .db-header { flex-direction: column; }
-            .db-search { min-width: 100%; }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 16px
         }
-        .card .grid2+.grid2 { margin-top: 8px }
-        .card .grid3 { grid-template-columns: repeat(3, 1fr); }
-        .card .kv { width: 100%; gap: 4px; }
-        .card .kv label { font-size: .72em; }
+
+        h2 {
+            margin: 14px 0 8px;
+            font-size: var(--head-fz)
+        }
+
+        .tabs-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--line);
+        }
+
+        .tab-button {
+            background: transparent;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 700;
+            color: var(--muted);
+            border-bottom: 3px solid transparent;
+            transition: color .15s, border-color .15s;
+            margin-bottom: -2px;
+        }
+
+        .tab-button.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+        }
+
+        .tab-button:hover {
+            color: var(--dark);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .top {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            align-items: stretch;
+            flex-wrap: wrap
+        }
+
+        .card {
+            background: linear-gradient(180deg, var(--panel) 0%, var(--panel2) 100%);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 16px;
+            min-width: 280px;
+            flex: 1 1 360px;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            margin: 0 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800
+        }
+
+        .foodicon {
+            font-size: 1.1em;
+            margin-right: 6px
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--kv-gap);
+            align-items: start
+        }
+
+        .grid3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: var(--kv-gap);
+            align-items: start
+        }
+
+        .kv {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 10px;
+            background: rgba(135, 206, 235, .04);
+            font-size: var(--mini-fz);
+            width: var(--kv-width);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+        }
+
+        .kv input,
+        .kv select {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(44, 44, 44, .14);
+            background: #fff;
+            color: var(--text);
+            outline: none;
+            font-size: .98em;
+            box-sizing: border-box;
+            min-height: 36px;
+        }
+
+        .kv input[type="number"]::-webkit-outer-spin-button,
+        .kv input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .kv input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .kv input:focus,
+        .kv select:focus {
+            border-color: rgba(212, 175, 55, .95);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, .10);
+        }
+
+        .kv label {
+            color: var(--muted);
+            font-size: .72em;
+            margin: 0;
+            line-height: 1.05;
+            text-align: center;
+            font-weight: 700;
+            padding: 0 4px;
+            width: 100%;
+            box-sizing: border-box
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .small {
+            font-size: .95em
+        }
+
+        .summary-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 7.2px;
+            border-radius: 14px;
+            min-width: 108px;
+            background: linear-gradient(180deg, #fff 0%, rgba(212, 175, 55, .08) 100%);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+        }
+
+        .summary-box .value {
+            font-size: 26px;
+            font-weight: 900;
+            margin-bottom: 4px;
+            color: var(--dark)
+        }
+
+        .summary-box label {
+            font-size: .63em;
+            color: var(--muted);
+            margin: 0;
+            text-align: center
+        }
+
+        .summary-box.deficit .value {
+            color: #d00;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            font-size: .97em;
+        }
+
+        th,
+        td {
+            padding: 9px 10px;
+            border-bottom: 1px solid var(--line);
+            font-size: inherit
+        }
+
+        th {
+            text-align: left;
+            color: rgba(44, 44, 44, .75);
+            background: rgba(135, 206, 235, .06);
+            font-weight: 800;
+            font-size: .76em;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+        }
+
+        .card[data-meal] th {
+            font-size: .72em;
+        }
+
+        table tbody tr:hover {
+            background: rgba(135, 206, 235, .05)
+        }
+
+        tr:last-child td {
+            border-bottom: none
+        }
+
+        .right {
+            text-align: right
+        }
+
+        .totals td {
+            font-weight: 900;
+            background: rgba(212, 175, 55, .06)
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0 0 6px;
+            flex-wrap: wrap;
+        }
+
+        .actions h2 {
+            margin: 0;
+        }
+
+        .food-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        button {
+            border: none;
+            background: linear-gradient(180deg, #fff 0%, rgba(212, 175, 55, .08) 100%);
+            color: var(--dark);
+            padding: 8px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 1.02em;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s, transform .06s;
+        }
+
+        button:active {
+            transform: translateY(1px)
+        }
+
+        button:focus {
+            outline: 2px solid rgba(212, 175, 55, .22)
+        }
+
+        .btn-add {
+            font-size: 1.12em;
+            min-width: 36px;
+            height: 36px;
+            width: 36px;
+            padding: 0;
+            background: var(--gold);
+            color: #fff;
+            font-weight: 900;
+            border: 1px solid rgba(212, 175, 55, .35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .btn-add:hover {
+            background: #b8962e
+        }
+
+        .btn-del {
+            background: transparent;
+            color: #a00;
+            border: none;
+            font-size: 0.525em;
+            padding: 0 3px;
+            height: 14px;
+            width: 14px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-del:hover {
+            background: rgba(212, 175, 55, .08);
+            color: #d00
+        }
+
+        .btn-save {
+            font-size: 1.2em;
+            background: transparent;
+            color: var(--gold);
+            padding: 6px;
+            height: 32px;
+            width: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+            transition: background .15s;
+        }
+
+        .btn-save:hover {
+            background: rgba(212, 175, 55, .15);
+            color: #b8962e;
+        }
+
+        select.foodSelect {
+            font-size: 95%;
+            transform: scale(var(--dropdown-scale));
+            min-width: 110px;
+            width: 180px;
+            max-width: 240px;
+            padding-left: 10px;
+            padding-right: 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(212, 175, 55, .22);
+            background: #fff;
+            min-height: 36px;
+        }
+
+        .status {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: .95em
+        }
+
+        .meals {
+            margin-top: 12px;
+            display: grid;
+            gap: 12px
+        }
+
+        @media(min-width:880px) {
+            .meals {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+
+        .tracker-top {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .graph-slot {
+            min-height: 120px;
+            border: 1px dashed var(--line);
+            color: var(--muted);
+            font-weight: 700;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        .graph-slot h3 {
+            margin: 0 0 8px;
+            font-size: .95em;
+            color: var(--dark);
+        }
+
+        .chart-wrap {
+            position: relative;
+            width: 100%;
+            height: 220px;
+        }
+
+        #historyChart {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .chart-empty {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            font-size: .9em;
+            text-align: center;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            font-size: .82em;
+            color: var(--muted);
+        }
+
+        .chart-legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chart-legend i {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            display: inline-block;
+        }
+
+        @media(min-width:880px) {
+            .tracker-top {
+                grid-template-columns: 1fr 1fr;
+                align-items: start;
+            }
+        }
+
+        .card[data-meal] {
+            position: relative
+        }
+
+        .card[data-meal]::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--olive);
+            border-radius: 14px 0 0 14px;
+            opacity: .22;
+        }
+
+        .mealBody input[type="number"] {
+            width: 100px;
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid rgba(44, 44, 44, .20);
+            padding: 6px 8px;
+            font-size: 98%;
+            min-height: 34px;
+        }
+
+        .mealBody input[type="number"]::-webkit-outer-spin-button,
+        .mealBody input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .mealBody input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .mealBody input[type="number"]:focus {
+            border-color: rgba(212, 175, 55, .95);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, .10);
+            outline: none;
+        }
+
+        .history-container {
+            margin-top: 20px;
+        }
+
+        .history-list {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .history-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--line);
+            cursor: pointer;
+            transition: background .15s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-item:hover {
+            background: rgba(135, 206, 235, .03);
+        }
+
+        .history-item-info {
+            flex: 1;
+        }
+
+        .history-item-date {
+            font-weight: 800;
+            color: var(--dark);
+            font-size: 1em;
+        }
+
+        .history-item-time {
+            font-size: .9em;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .history-item-stats {
+            font-size: .85em;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .history-item-actions {
+            display: flex;
+            gap: 8px;
+            margin-left: 12px;
+        }
+
+        .btn-view {
+            background: transparent;
+            color: var(--gold);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: .9em;
+            font-weight: 700;
+            transition: background .15s;
+        }
+
+        .btn-view:hover {
+            background: rgba(212, 175, 55, .15);
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: #a00;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: .9em;
+            font-weight: 700;
+            transition: background .15s;
+        }
+
+        .btn-delete:hover {
+            background: rgba(212, 175, 55, .08);
+            color: #d00;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn .2s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background-color: var(--cream);
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .close-modal {
+            background: transparent;
+            border: none;
+            font-size: 1.5em;
+            color: var(--muted);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            color: var(--dark);
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 12px;
+        }
+
+        .db-header {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .db-search {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .db-search input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        .db-search input:focus {
+            border-color: rgba(212, 175, 55, .95);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, .10);
+            outline: none;
+        }
+
+        .food-list {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .food-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .food-item:last-child {
+            border-bottom: none;
+        }
+
+        .food-item:hover {
+            background: rgba(135, 206, 235, .03);
+        }
+
+        .food-item-info {
+            flex: 1;
+        }
+
+        .food-item-name {
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+
+        .food-item-macros {
+            font-size: .9em;
+            color: var(--muted);
+        }
+
+        .food-item-actions {
+            display: flex;
+            gap: 8px;
+            margin-left: 12px;
+        }
+
+        .btn-edit {
+            background: transparent;
+            color: var(--gold);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: .9em;
+            font-weight: 700;
+            transition: background .15s;
+        }
+
+        .btn-edit:hover {
+            background: rgba(212, 175, 55, .15);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: .9em;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: rgba(212, 175, 55, .95);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, .10);
+            outline: none;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #b8962e;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--muted);
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(135, 206, 235, .05);
+            color: var(--dark);
+        }
+
+        #foodFormSection {
+            order: -1;
+            margin: 0 0 20px 0 !important;
+        }
+
+        .db-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .config-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .summary-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width:600px) {
+            .top {
+                flex-direction: column
+            }
+
+            .kv {
+                width: 100%
+            }
+
+            .grid2 {
+                grid-template-columns: 1fr
+            }
+
+            .grid3 {
+                grid-template-columns: 1fr
+            }
+
+            select.foodSelect {
+                width: 100%;
+                transform: none
+            }
+
+            .summary-box {
+                min-width: 100%
+            }
+
+            .food-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .food-item-actions {
+                margin-left: 0;
+                margin-top: 12px;
+                width: 100%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .db-header {
+                flex-direction: column;
+            }
+
+            .db-search {
+                min-width: 100%;
+            }
+        }
+
+        .card .grid2+.grid2 {
+            margin-top: 8px
+        }
+
+        .card .grid3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .card .kv {
+            width: 100%;
+            gap: 4px;
+        }
+
+        .card .kv label {
+            font-size: .72em;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="tabs-header">
@@ -192,18 +973,46 @@
                     <h2>📊 Resumen diario</h2>
                     <div style="height:10px"></div>
                     <table aria-label="Tabla resumen diario">
-                        <thead><tr><th>Macro</th><th class="right">Consumido (g)</th><th class="right">Ideal (g)</th><th class="right">% del ideal</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Macro</th>
+                                <th class="right">Consumido (g)</th>
+                                <th class="right">Ideal (g)</th>
+                                <th class="right">% del ideal</th>
+                            </tr>
+                        </thead>
                         <tbody>
-                            <tr><td>Proteínas</td><td class="right" id="sumProtG">0</td><td class="right" id="idealProtVal">130</td><td class="right" id="sumProtPct">0%</td></tr>
-                            <tr><td>Carbohidratos</td><td class="right" id="sumCarbG">0</td><td class="right" id="idealCarbVal">170</td><td class="right" id="sumCarbPct">0%</td></tr>
-                            <tr><td>Grasas</td><td class="right" id="sumFatG">0</td><td class="right" id="idealFatVal">50</td><td class="right" id="sumFatPct">0%</td></tr>
+                            <tr>
+                                <td>Proteínas</td>
+                                <td class="right" id="sumProtG">0</td>
+                                <td class="right" id="idealProtVal">130</td>
+                                <td class="right" id="sumProtPct">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Carbohidratos</td>
+                                <td class="right" id="sumCarbG">0</td>
+                                <td class="right" id="idealCarbVal">170</td>
+                                <td class="right" id="sumCarbPct">0%</td>
+                            </tr>
+                            <tr>
+                                <td>Grasas</td>
+                                <td class="right" id="sumFatG">0</td>
+                                <td class="right" id="idealFatVal">50</td>
+                                <td class="right" id="sumFatPct">0%</td>
+                            </tr>
                         </tbody>
                     </table>
                     <div style="height:10px"></div>
                     <div class="summary-row">
-                        <div class="summary-box"><div class="value" id="sumKcal">0</div><label>Total kcal consumidas</label></div>
-                        <div class="summary-box deficit"><div class="value" id="deficitTracker">0</div><label>Déficit real</label></div>
-                        <div class="summary-box"><div class="value" id="objKcalLabel">0</div><label>Objetivo kcal</label></div>
+                        <div class="summary-box">
+                            <div class="value" id="sumKcal">0</div><label>Total kcal consumidas</label>
+                        </div>
+                        <div class="summary-box deficit">
+                            <div class="value" id="deficitTracker">0</div><label>Déficit real</label>
+                        </div>
+                        <div class="summary-box">
+                            <div class="value" id="objKcalLabel">0</div><label>Objetivo kcal</label>
+                        </div>
                     </div>
                     <div class="config-footer">
                         <button type="button" class="btn-save" id="btnSave" title="Guardar datos del día">💾</button>
@@ -227,40 +1036,132 @@
                 <section class="card" data-meal="desayuno">
                     <div class="actions">
                         <h2><span class="foodicon">☕️</span>Desayuno</h2>
-                        <div class="food-controls"><select class="foodSelect"></select><button type="button" class="btn-add" title="Añadir alimento">+</button></div>
+                        <div class="food-controls"><select class="foodSelect"></select><button type="button"
+                                class="btn-add" title="Añadir alimento">+</button></div>
                     </div>
                     <div class="status foodsStatus">Cargando alimentos...</div>
-                    <table style="margin-top:10px"><thead><tr><th style="width:28%">Alimento</th><th class="right">Cal (kcal)</th><th class="right">Grasas (g)</th><th class="right">Carbs (g)</th><th class="right">Prot (g)</th><th class="right">Gr</th></tr></thead><tbody class="mealBody"></tbody><tbody class="totals"><tr><td>Totales</td><td class="right totalKcal">0</td><td class="right totalFat">0</td><td class="right totalCarb">0</td><td class="right totalProt">0</td><td class="right totalGr">0</td></tr></tbody></table>
+                    <table style="margin-top:10px">
+                        <thead>
+                            <tr>
+                                <th style="width:28%">Alimento</th>
+                                <th class="right">Cal (kcal)</th>
+                                <th class="right">Grasas (g)</th>
+                                <th class="right">Carbs (g)</th>
+                                <th class="right">Prot (g)</th>
+                                <th class="right">Gr</th>
+                            </tr>
+                        </thead>
+                        <tbody class="mealBody"></tbody>
+                        <tbody class="totals">
+                            <tr>
+                                <td>Totales</td>
+                                <td class="right totalKcal">0</td>
+                                <td class="right totalFat">0</td>
+                                <td class="right totalCarb">0</td>
+                                <td class="right totalProt">0</td>
+                                <td class="right totalGr">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <p class="muted small" style="margin:8px 0 0">Nota: valores "por 100g".</p>
                 </section>
 
                 <section class="card" data-meal="comida">
                     <div class="actions">
                         <h2><span class="foodicon">🍽️</span>Comida</h2>
-                        <div class="food-controls"><select class="foodSelect"></select><button type="button" class="btn-add" title="Añadir alimento">+</button></div>
+                        <div class="food-controls"><select class="foodSelect"></select><button type="button"
+                                class="btn-add" title="Añadir alimento">+</button></div>
                     </div>
                     <div class="status foodsStatus">Cargando alimentos...</div>
-                    <table style="margin-top:10px"><thead><tr><th style="width:28%">Alimento</th><th class="right">Cal (kcal)</th><th class="right">Grasas (g)</th><th class="right">Carbs (g)</th><th class="right">Prot (g)</th><th class="right">Gr</th></tr></thead><tbody class="mealBody"></tbody><tbody class="totals"><tr><td>Totales</td><td class="right totalKcal">0</td><td class="right totalFat">0</td><td class="right totalCarb">0</td><td class="right totalProt">0</td><td class="right totalGr">0</td></tr></tbody></table>
+                    <table style="margin-top:10px">
+                        <thead>
+                            <tr>
+                                <th style="width:28%">Alimento</th>
+                                <th class="right">Cal (kcal)</th>
+                                <th class="right">Grasas (g)</th>
+                                <th class="right">Carbs (g)</th>
+                                <th class="right">Prot (g)</th>
+                                <th class="right">Gr</th>
+                            </tr>
+                        </thead>
+                        <tbody class="mealBody"></tbody>
+                        <tbody class="totals">
+                            <tr>
+                                <td>Totales</td>
+                                <td class="right totalKcal">0</td>
+                                <td class="right totalFat">0</td>
+                                <td class="right totalCarb">0</td>
+                                <td class="right totalProt">0</td>
+                                <td class="right totalGr">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <p class="muted small" style="margin:8px 0 0">Nota: valores "por 100g".</p>
                 </section>
 
                 <section class="card" data-meal="merienda">
                     <div class="actions">
                         <h2><span class="foodicon">🍪</span>Merienda</h2>
-                        <div class="food-controls"><select class="foodSelect"></select><button type="button" class="btn-add" title="Añadir alimento">+</button></div>
+                        <div class="food-controls"><select class="foodSelect"></select><button type="button"
+                                class="btn-add" title="Añadir alimento">+</button></div>
                     </div>
                     <div class="status foodsStatus">Cargando alimentos...</div>
-                    <table style="margin-top:10px"><thead><tr><th style="width:28%">Alimento</th><th class="right">Cal (kcal)</th><th class="right">Grasas (g)</th><th class="right">Carbs (g)</th><th class="right">Prot (g)</th><th class="right">Gr</th></tr></thead><tbody class="mealBody"></tbody><tbody class="totals"><tr><td>Totales</td><td class="right totalKcal">0</td><td class="right totalFat">0</td><td class="right totalCarb">0</td><td class="right totalProt">0</td><td class="right totalGr">0</td></tr></tbody></table>
+                    <table style="margin-top:10px">
+                        <thead>
+                            <tr>
+                                <th style="width:28%">Alimento</th>
+                                <th class="right">Cal (kcal)</th>
+                                <th class="right">Grasas (g)</th>
+                                <th class="right">Carbs (g)</th>
+                                <th class="right">Prot (g)</th>
+                                <th class="right">Gr</th>
+                            </tr>
+                        </thead>
+                        <tbody class="mealBody"></tbody>
+                        <tbody class="totals">
+                            <tr>
+                                <td>Totales</td>
+                                <td class="right totalKcal">0</td>
+                                <td class="right totalFat">0</td>
+                                <td class="right totalCarb">0</td>
+                                <td class="right totalProt">0</td>
+                                <td class="right totalGr">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <p class="muted small" style="margin:8px 0 0">Nota: valores "por 100g".</p>
                 </section>
 
                 <section class="card" data-meal="cena">
                     <div class="actions">
                         <h2><span class="foodicon">🌙</span>Cena</h2>
-                        <div class="food-controls"><select class="foodSelect"></select><button type="button" class="btn-add" title="Añadir alimento">+</button></div>
+                        <div class="food-controls"><select class="foodSelect"></select><button type="button"
+                                class="btn-add" title="Añadir alimento">+</button></div>
                     </div>
                     <div class="status foodsStatus">Cargando alimentos...</div>
-                    <table style="margin-top:10px"><thead><tr><th style="width:28%">Alimento</th><th class="right">Cal (kcal)</th><th class="right">Grasas (g)</th><th class="right">Carbs (g)</th><th class="right">Prot (g)</th><th class="right">Gr</th></tr></thead><tbody class="mealBody"></tbody><tbody class="totals"><tr><td>Totales</td><td class="right totalKcal">0</td><td class="right totalFat">0</td><td class="right totalCarb">0</td><td class="right totalProt">0</td><td class="right totalGr">0</td></tr></tbody></table>
+                    <table style="margin-top:10px">
+                        <thead>
+                            <tr>
+                                <th style="width:28%">Alimento</th>
+                                <th class="right">Cal (kcal)</th>
+                                <th class="right">Grasas (g)</th>
+                                <th class="right">Carbs (g)</th>
+                                <th class="right">Prot (g)</th>
+                                <th class="right">Gr</th>
+                            </tr>
+                        </thead>
+                        <tbody class="mealBody"></tbody>
+                        <tbody class="totals">
+                            <tr>
+                                <td>Totales</td>
+                                <td class="right totalKcal">0</td>
+                                <td class="right totalFat">0</td>
+                                <td class="right totalCarb">0</td>
+                                <td class="right totalProt">0</td>
+                                <td class="right totalGr">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <p class="muted small" style="margin:8px 0 0">Nota: valores "por 100g".</p>
                 </section>
             </div>
@@ -268,7 +1169,10 @@
             <section class="card history-container">
                 <h2>📋 Historial de guardados</h2>
                 <div class="history-list" id="historyList">
-                    <div class="empty-state"><div class="empty-state-icon">📭</div><p>No hay datos guardados aún</p></div>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No hay datos guardados aún</p>
+                    </div>
                 </div>
             </section>
         </div>
@@ -277,22 +1181,32 @@
             <section class="card">
                 <h2>⚙️ Configuración corporal</h2>
                 <div class="grid3">
-                    <div class="kv"><input id="peso" type="number" value="64.6" step="0.1" /><label for="peso">Peso (kg)</label></div>
-                    <div class="kv"><input id="altura" type="number" value="158" step="1" /><label for="altura">Altura (cm)</label></div>
-                    <div class="kv"><input id="edad" type="number" value="30" step="1" /><label for="edad">Edad</label></div>
+                    <div class="kv"><input id="peso" type="number" value="64.6" step="0.1" /><label for="peso">Peso
+                            (kg)</label></div>
+                    <div class="kv"><input id="altura" type="number" value="158" step="1" /><label for="altura">Altura
+                            (cm)</label></div>
+                    <div class="kv"><input id="edad" type="number" value="30" step="1" /><label for="edad">Edad</label>
+                    </div>
                 </div>
                 <div class="grid3" style="margin-top:8px;">
-                    <div class="kv"><input id="bmr" type="number" value="0" step="1" readonly /><label for="bmr">BMR (kcal) (auto)</label></div>
-                    <div class="kv"><input id="tdee" type="number" value="0" step="1" readonly /><label for="tdee">TDEE (kcal) (auto)</label></div>
-                    <div class="kv"><input id="deficitReal" type="number" value="0" step="1" readonly /><label for="deficitReal">Déficit real (auto)</label></div>
+                    <div class="kv"><input id="bmr" type="number" value="0" step="1" readonly /><label for="bmr">BMR
+                            (kcal) (auto)</label></div>
+                    <div class="kv"><input id="tdee" type="number" value="0" step="1" readonly /><label for="tdee">TDEE
+                            (kcal) (auto)</label></div>
+                    <div class="kv"><input id="deficitReal" type="number" value="0" step="1" readonly /><label
+                            for="deficitReal">Déficit real (auto)</label></div>
                 </div>
                 <input id="sexo" type="hidden" value="female" />
                 <div class="grid3" style="margin-top:8px;">
-                    <div class="kv"><input id="idealProt" type="number" value="130" step="1" /><label for="idealProt">Ideal Proteínas (g)</label></div>
-                    <div class="kv"><input id="idealCarb" type="number" value="170" step="1" /><label for="idealCarb">Ideal Carbohidratos (g)</label></div>
-                    <div class="kv"><input id="idealFat" type="number" value="50" step="1" /><label for="idealFat">Ideal Grasas (g)</label></div>
+                    <div class="kv"><input id="idealProt" type="number" value="130" step="1" /><label
+                            for="idealProt">Ideal Proteínas (g)</label></div>
+                    <div class="kv"><input id="idealCarb" type="number" value="170" step="1" /><label
+                            for="idealCarb">Ideal Carbohidratos (g)</label></div>
+                    <div class="kv"><input id="idealFat" type="number" value="50" step="1" /><label for="idealFat">Ideal
+                            Grasas (g)</label></div>
                 </div>
-                <p class="muted small" style="margin:16px 0 0">*BMR = (10×peso) + (6,25×altura) - (5×edad) - 161. TDEE = BMR × 1,65. Déficit = TDEE - kcal consumidas.</p>
+                <p class="muted small" style="margin:16px 0 0">*BMR = (10×peso) + (6,25×altura) - (5×edad) - 161. TDEE =
+                    BMR × 1,65. Déficit = TDEE - kcal consumidas.</p>
             </section>
         </div>
 
@@ -301,18 +1215,24 @@
                 <section class="card">
                     <h2>🗄️ Base de datos de alimentos</h2>
                     <div class="db-header">
-                        <div class="db-search"><input type="text" id="searchFood" placeholder="Buscar alimento..."></div>
+                        <div class="db-search"><input type="text" id="searchFood" placeholder="Buscar alimento...">
+                        </div>
                         <button type="button" class="btn-add" id="btnAddFood" title="Añadir nuevo alimento">+</button>
                     </div>
 
                     <section class="card" id="foodFormSection" style="display:none; margin: 0 0 20px 0;">
                         <h2 id="formTitle">Nuevo alimento</h2>
                         <div class="form-grid">
-                            <div class="form-group"><label for="formFoodName">Nombre del alimento *</label><input type="text" id="formFoodName" placeholder="Ej: Pollo pechuga" required></div>
-                            <div class="form-group"><label for="formFoodKcal">Calorías (kcal) *</label><input type="number" id="formFoodKcal" placeholder="0" step="0.1" required></div>
-                            <div class="form-group"><label for="formFoodFat">Grasas (g) *</label><input type="number" id="formFoodFat" placeholder="0" step="0.1" required></div>
-                            <div class="form-group"><label for="formFoodCarb">Carbohidratos (g) *</label><input type="number" id="formFoodCarb" placeholder="0" step="0.1" required></div>
-                            <div class="form-group"><label for="formFoodProt">Proteínas (g) *</label><input type="number" id="formFoodProt" placeholder="0" step="0.1" required></div>
+                            <div class="form-group"><label for="formFoodName">Nombre del alimento *</label><input
+                                    type="text" id="formFoodName" placeholder="Ej: Pollo pechuga" required></div>
+                            <div class="form-group"><label for="formFoodKcal">Calorías (kcal) *</label><input
+                                    type="number" id="formFoodKcal" placeholder="0" step="0.1" required></div>
+                            <div class="form-group"><label for="formFoodFat">Grasas (g) *</label><input type="number"
+                                    id="formFoodFat" placeholder="0" step="0.1" required></div>
+                            <div class="form-group"><label for="formFoodCarb">Carbohidratos (g) *</label><input
+                                    type="number" id="formFoodCarb" placeholder="0" step="0.1" required></div>
+                            <div class="form-group"><label for="formFoodProt">Proteínas (g) *</label><input
+                                    type="number" id="formFoodProt" placeholder="0" step="0.1" required></div>
                         </div>
                         <div class="form-actions">
                             <button type="button" class="btn-primary" id="btnSaveFood">Guardar alimento</button>
@@ -321,7 +1241,10 @@
                     </section>
 
                     <div class="food-list" id="foodList">
-                        <div class="empty-state"><div class="empty-state-icon">🍽️</div><p>Cargando alimentos...</p></div>
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🍽️</div>
+                            <p>Cargando alimentos...</p>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -330,7 +1253,10 @@
 
     <div id="detailModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h3 id="modalTitle">Detalles del guardado</h3><button type="button" class="close-modal" id="closeModal">&times;</button></div>
+            <div class="modal-header">
+                <h3 id="modalTitle">Detalles del guardado</h3><button type="button" class="close-modal"
+                    id="closeModal">&times;</button>
+            </div>
             <div id="modalBody"></div>
         </div>
     </div>
@@ -474,7 +1400,7 @@
                     document.getElementById("idealProt").value = config.idealProt || 130;
                     document.getElementById("idealCarb").value = config.idealCarb || 170;
                     document.getElementById("idealFat").value = config.idealFat || 50;
-                } catch (e) {}
+                } catch (e) { }
             }
         }
 
@@ -498,32 +1424,32 @@
                 mealState[meal].forEach((row, idx) => {
                     const food = FOODS.find(f => f.id === row.foodId);
                     if (!food) return;
-                    
-                    const displayMacros = row.grams === 0 ? 
-                        food.per : 
+
+                    const displayMacros = row.grams === 0 ?
+                        food.per :
                         computeRowMacros(food, row.grams);
-                    
+
                     const tr = document.createElement("tr");
                     tr.innerHTML = `<td>${food.name}</td><td class="right">${round0(displayMacros.kcal)}</td><td class="right">${round1(displayMacros.fat)}</td><td class="right">${round1(displayMacros.carb)}</td><td class="right">${round1(displayMacros.prot)}</td><td class="right"></td>`;
                     const grTd = tr.children[5];
-                    
+
                     const input = document.createElement("input");
                     input.type = "number";
                     input.min = "0";
                     input.step = "1";
                     input.value = row.grams || '';
-                    
+
                     input.addEventListener("change", () => {
                         mealState[meal][idx].grams = Number(input.value || 0);
                         renderFoodsInMeals();
                         recalcBMRObjective();
                     });
-                    
+
                     input.addEventListener("input", () => {
                         mealState[meal][idx].grams = Number(input.value || 0);
                         recalcBMRObjective();
                     });
-                    
+
                     grTd.appendChild(input);
 
                     const delBtn = document.createElement("button");
@@ -575,10 +1501,10 @@
                 const item = document.createElement('div');
                 item.className = 'food-item';
                 item.innerHTML = `<div class="food-item-info"><div class="food-item-name">${food.name}</div><div class="food-item-macros">${round0(food.per.kcal)} kcal • ${round1(food.per.fat)}g grasas • ${round1(food.per.carb)}g carbs • ${round1(food.per.prot)}g prot</div></div><div class="food-item-actions"><button type="button" class="btn-edit">Editar</button><button type="button" class="btn-delete">Eliminar</button></div>`;
-                
+
                 item.querySelector('.btn-edit').addEventListener('click', () => editFood(food.id));
                 item.querySelector('.btn-delete').addEventListener('click', () => deleteFood(food.id));
-                
+
                 foodList.appendChild(item);
             });
         }
@@ -645,10 +1571,10 @@
             const weightKg = Number(document.getElementById("peso").value || 0);
             const heightCm = Number(document.getElementById("altura").value || 0);
             const age = Number(document.getElementById("edad").value || 0);
-            
+
             const bmr = mifflinBMR({ weightKg, heightCm, age });
             document.getElementById("bmr").value = round0(bmr);
-            
+
             const tdee = bmr * 1.65;
             document.getElementById("tdee").value = round0(tdee);
 
@@ -1011,4 +1937,5 @@
         window.addEventListener('resize', renderHistoryChart);
     </script>
 </body>
+
 </html>
