@@ -890,6 +890,48 @@
             margin-bottom: 10px;
         }
 
+        .sync-box {
+            margin-top: 14px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px;
+            background: #fff;
+        }
+
+        .sync-box h3 {
+            margin: 0 0 8px;
+            font-size: .95em;
+        }
+
+        .sync-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .sync-row input {
+            flex: 1;
+            min-width: 240px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            font-size: .92em;
+        }
+
+        .sync-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .sync-note {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: .86em;
+        }
+
         @media (max-width:600px) {
             .top {
                 flex-direction: column
@@ -1207,6 +1249,18 @@
                 </div>
                 <p class="muted small" style="margin:16px 0 0">*BMR = (10×peso) + (6,25×altura) - (5×edad) - 161. TDEE =
                     BMR × 1,65. Déficit = TDEE - kcal consumidas.</p>
+                <div class="sync-box">
+                    <h3>☁️ Sincronización de historial</h3>
+                    <div class="sync-row">
+                        <input id="syncUrl" type="text" placeholder="Pega aquí tu URL de sincronización" />
+                    </div>
+                    <div class="sync-actions">
+                        <button type="button" id="btnCreateSyncLink">Crear enlace</button>
+                        <button type="button" id="btnPullHistory">Descargar</button>
+                        <button type="button" id="btnPushHistory">Subir</button>
+                    </div>
+                    <p class="sync-note">Usa la misma URL en teléfono y ordenador para compartir el mismo historial.</p>
+                </div>
             </section>
         </div>
 
@@ -1264,6 +1318,8 @@
     <script>
         let FOODS = [];
         let editingFoodId = null;
+        const HISTORY_STORAGE_KEY = 'foodTrackerData';
+        const CLOUD_SYNC_URL_KEY = 'historyCloudSyncUrl';
 
         function round1(n) { return Math.round((n + Number.EPSILON) * 10) / 10; }
         function round0(n) { return Math.round(n); }
@@ -1375,6 +1431,109 @@
 
         function saveFoodsToStorage() {
             localStorage.setItem('foodDatabase', JSON.stringify(FOODS));
+        }
+
+        function loadHistoryFromStorage() {
+            const stored = localStorage.getItem(HISTORY_STORAGE_KEY);
+            if (!stored) return [];
+            try {
+                const parsed = JSON.parse(stored);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveHistoryToStorage(historyData) {
+            localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(historyData));
+        }
+
+        function getCloudSyncUrl() {
+            const input = document.getElementById('syncUrl');
+            return String(input?.value || '').trim();
+        }
+
+        function saveCloudSyncUrl(url) {
+            localStorage.setItem(CLOUD_SYNC_URL_KEY, String(url || '').trim());
+        }
+
+        function loadCloudSyncUrl() {
+            const saved = localStorage.getItem(CLOUD_SYNC_URL_KEY) || '';
+            const input = document.getElementById('syncUrl');
+            if (input) input.value = saved;
+            return saved;
+        }
+
+        async function createCloudSyncLink() {
+            const payload = {
+                history: loadHistoryFromStorage(),
+                updatedAt: new Date().toISOString()
+            };
+            try {
+                const res = await fetch('https://jsonblob.com/api/jsonBlob', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('No se pudo crear el enlace');
+                const location = res.headers.get('Location') || res.headers.get('location');
+                if (!location) throw new Error('No se recibió URL de sincronización');
+                document.getElementById('syncUrl').value = location;
+                saveCloudSyncUrl(location);
+                alert('✓ Enlace creado. Copia esta URL en tus otros dispositivos.');
+            } catch (e) {
+                alert('No se pudo crear el enlace de sincronización.');
+            }
+        }
+
+        async function pushHistoryToCloud(silent = false) {
+            const url = getCloudSyncUrl();
+            if (!url) {
+                if (!silent) alert('Primero crea o pega una URL de sincronización.');
+                return false;
+            }
+            const payload = {
+                history: loadHistoryFromStorage(),
+                updatedAt: new Date().toISOString()
+            };
+            try {
+                const res = await fetch(url, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('No se pudo subir historial');
+                saveCloudSyncUrl(url);
+                if (!silent) alert('✓ Historial subido.');
+                return true;
+            } catch (e) {
+                if (!silent) alert('No se pudo subir el historial.');
+                return false;
+            }
+        }
+
+        async function pullHistoryFromCloud(silent = false) {
+            const url = getCloudSyncUrl();
+            if (!url) {
+                if (!silent) alert('Primero crea o pega una URL de sincronización.');
+                return false;
+            }
+            try {
+                const res = await fetch(url, { method: 'GET' });
+                if (!res.ok) throw new Error('No se pudo descargar historial');
+                const data = await res.json();
+                const remoteHistory = Array.isArray(data) ? data : (Array.isArray(data?.history) ? data.history : []);
+                if (!Array.isArray(remoteHistory)) throw new Error('Formato inválido');
+                saveHistoryToStorage(remoteHistory);
+                saveCloudSyncUrl(url);
+                renderHistoryList();
+                renderHistoryChart();
+                if (!silent) alert('✓ Historial descargado.');
+                return true;
+            } catch (e) {
+                if (!silent) alert('No se pudo descargar el historial.');
+                return false;
+            }
         }
 
         function saveConfigToStorage() {
@@ -1658,19 +1817,20 @@
                 }
             };
 
-            let allData = JSON.parse(localStorage.getItem('foodTrackerData') || '[]');
+            let allData = loadHistoryFromStorage();
             allData.push(dataToSave);
-            localStorage.setItem('foodTrackerData', JSON.stringify(allData));
+            saveHistoryToStorage(allData);
             saveConfigToStorage();
 
             renderHistoryList();
             renderHistoryChart();
+            if (getCloudSyncUrl()) pushHistoryToCloud(true);
             alert(`✓ Datos guardados: ${dateStr} ${timeStr}`);
         }
 
         function renderHistoryList() {
             const historyList = document.getElementById('historyList');
-            const allData = JSON.parse(localStorage.getItem('foodTrackerData') || '[]');
+            const allData = loadHistoryFromStorage();
 
             if (allData.length === 0) {
                 historyList.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📭</div><p>No hay datos guardados aún</p></div>`;
@@ -1712,7 +1872,7 @@
         }
 
         function getHistorySeries() {
-            const allData = JSON.parse(localStorage.getItem('foodTrackerData') || '[]');
+            const allData = loadHistoryFromStorage();
             const sorted = [...allData].sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
 
             const labels = [];
@@ -1856,16 +2016,16 @@
 
         function deleteHistoryItem(idx) {
             if (confirm('¿Eliminar?')) {
-                let allData = JSON.parse(localStorage.getItem('foodTrackerData') || '[]');
+                let allData = loadHistoryFromStorage();
                 allData.splice(idx, 1);
-                localStorage.setItem('foodTrackerData', JSON.stringify(allData));
+                saveHistoryToStorage(allData);
                 renderHistoryList();
                 renderHistoryChart();
             }
         }
 
         function showHistoryDetail(idx) {
-            const allData = JSON.parse(localStorage.getItem('foodTrackerData') || '[]');
+            const allData = loadHistoryFromStorage();
             const data = allData[idx];
             document.getElementById('modalTitle').textContent = `${data.date} ${data.time}`;
             document.getElementById('modalBody').innerHTML = `<p><strong>Config:</strong> ${data.config.peso}kg, ${data.config.altura}cm, ${data.config.edad}a | BMR: ${data.config.bmr} | TDEE: ${data.config.tdee} | Déficit real: ${data.config.deficitReal}</p><p><strong>Macros ideales:</strong> Prot: ${data.config.idealProt}g | Carbs: ${data.config.idealCarb}g | Grasas: ${data.config.idealFat}g</p><p><strong>Comidas:</strong> ${Object.keys(data.meals).map(m => `${m}: ${(data.meals[m] || []).length} items`).join(', ')}</p>`;
@@ -1906,6 +2066,13 @@
             renderFoodList(e.target.value);
         });
 
+        document.getElementById('syncUrl').addEventListener('change', () => {
+            saveCloudSyncUrl(getCloudSyncUrl());
+        });
+        document.getElementById('btnCreateSyncLink').addEventListener('click', createCloudSyncLink);
+        document.getElementById('btnPushHistory').addEventListener('click', () => { pushHistoryToCloud(false); });
+        document.getElementById('btnPullHistory').addEventListener('click', () => { pullHistoryFromCloud(false); });
+
         document.getElementById('closeModal').addEventListener('click', () => {
             document.getElementById('detailModal').style.display = 'none';
         });
@@ -1931,9 +2098,11 @@
         // Inicializar
         initializeFoods();
         loadConfigFromStorage();
+        loadCloudSyncUrl();
         recalcBMRObjective();
         renderHistoryList();
         renderHistoryChart();
+        if (getCloudSyncUrl()) pullHistoryFromCloud(true);
         window.addEventListener('resize', renderHistoryChart);
     </script>
 </body>
