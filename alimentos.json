@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Avena",
+    "kcal": 372,
+    "fat": 7,
+    "carb": 58.7,
+    "prot": 13.5
+  },
+  {
+    "name": "Huevo",
+    "kcal": 141,
+    "fat": 9.7,
+    "carb": 0.7,
+    "prot": 13
+  },
+  {
+    "name": "Pollo",
+    "kcal": 165,
+    "fat": 2.5,
+    "carb": 0,
+    "prot": 22
+  }
+]
