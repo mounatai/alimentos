@@ -540,6 +540,51 @@
             margin-top: 20px;
         }
 
+        .history-sync {
+            margin-bottom: 12px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px;
+            background: #fff;
+        }
+
+        .history-sync-title {
+            margin: 0 0 8px;
+            font-size: .95em;
+            color: var(--dark);
+            font-weight: 800;
+        }
+
+        .history-sync-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .history-sync-row input {
+            flex: 1;
+            min-width: 240px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            font-size: .92em;
+            box-sizing: border-box;
+        }
+
+        .history-sync-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .history-sync-note {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: .85em;
+        }
+
         .history-list {
             max-height: 500px;
             overflow-y: auto;
@@ -1172,6 +1217,19 @@
         <div id="history" class="tab-content">
             <section class="card history-container">
                 <h2>📋 Historial de guardados</h2>
+                <div class="history-sync">
+                    <p class="history-sync-title">☁️ Sincronización automática (móvil + ordenador)</p>
+                    <div class="history-sync-row">
+                        <input id="historySyncUrl" type="text" placeholder="Pega o crea un enlace de sincronización" />
+                    </div>
+                    <div class="history-sync-actions">
+                        <button type="button" id="btnCreateHistorySync">Crear enlace</button>
+                        <button type="button" id="btnPullHistorySync">Descargar</button>
+                        <button type="button" id="btnPushHistorySync">Subir</button>
+                    </div>
+                    <p class="history-sync-note">Usa la misma URL en ambos dispositivos. Al guardar, se sube
+                        automáticamente.</p>
+                </div>
                 <div class="history-list" id="historyList">
                     <div class="empty-state">
                         <div class="empty-state-icon">📭</div>
@@ -1269,6 +1327,8 @@
         let FOODS = [];
         let editingFoodId = null;
         const HISTORY_STORAGE_KEY = 'foodTrackerData';
+        const HISTORY_SYNC_URL_KEY = 'historySyncUrl';
+        const HISTORY_SYNC_API_BASE = 'https://jsonblob.com/api/jsonBlob';
 
         function round1(n) { return Math.round((n + Number.EPSILON) * 10) / 10; }
         function round0(n) { return Math.round(n); }
@@ -1395,6 +1455,94 @@
 
         function saveHistoryToStorage(historyData) {
             localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(historyData));
+        }
+
+        function getHistorySyncUrl() {
+            const input = document.getElementById('historySyncUrl');
+            return String(input?.value || '').trim();
+        }
+
+        function saveHistorySyncUrl(url) {
+            localStorage.setItem(HISTORY_SYNC_URL_KEY, String(url || '').trim());
+        }
+
+        function loadHistorySyncUrl() {
+            const stored = localStorage.getItem(HISTORY_SYNC_URL_KEY) || '';
+            const input = document.getElementById('historySyncUrl');
+            if (input) input.value = stored;
+            return stored;
+        }
+
+        async function createHistorySyncLink() {
+            const payload = {
+                history: loadHistoryFromStorage(),
+                updatedAt: new Date().toISOString()
+            };
+            try {
+                const res = await fetch(HISTORY_SYNC_API_BASE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('No se pudo crear');
+                const location = res.headers.get('Location') || res.headers.get('location');
+                if (!location) throw new Error('Sin URL de respuesta');
+                document.getElementById('historySyncUrl').value = location;
+                saveHistorySyncUrl(location);
+                alert('✓ Enlace creado. Úsalo en el otro dispositivo.');
+            } catch (e) {
+                alert('No se pudo crear el enlace de sincronización.');
+            }
+        }
+
+        async function pushHistoryToCloud(silent = false) {
+            const syncUrl = getHistorySyncUrl();
+            if (!syncUrl) {
+                if (!silent) alert('Pega o crea primero un enlace de sincronización.');
+                return false;
+            }
+            const payload = {
+                history: loadHistoryFromStorage(),
+                updatedAt: new Date().toISOString()
+            };
+            try {
+                const res = await fetch(syncUrl, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('No se pudo subir');
+                saveHistorySyncUrl(syncUrl);
+                if (!silent) alert('✓ Historial subido.');
+                return true;
+            } catch (e) {
+                if (!silent) alert('No se pudo subir el historial.');
+                return false;
+            }
+        }
+
+        async function pullHistoryFromCloud(silent = false) {
+            const syncUrl = getHistorySyncUrl();
+            if (!syncUrl) {
+                if (!silent) alert('Pega o crea primero un enlace de sincronización.');
+                return false;
+            }
+            try {
+                const res = await fetch(syncUrl);
+                if (!res.ok) throw new Error('No se pudo descargar');
+                const payload = await res.json();
+                const cloudHistory = Array.isArray(payload) ? payload : (Array.isArray(payload?.history) ? payload.history : []);
+                if (!Array.isArray(cloudHistory)) throw new Error('Formato inválido');
+                saveHistoryToStorage(cloudHistory);
+                saveHistorySyncUrl(syncUrl);
+                renderHistoryList();
+                renderHistoryChart();
+                if (!silent) alert('✓ Historial descargado.');
+                return true;
+            } catch (e) {
+                if (!silent) alert('No se pudo descargar el historial.');
+                return false;
+            }
         }
 
 
@@ -1686,6 +1834,7 @@
 
             renderHistoryList();
             renderHistoryChart();
+            if (getHistorySyncUrl()) pushHistoryToCloud(true);
             alert(`✓ Datos guardados: ${dateStr} ${timeStr}`);
         }
 
@@ -1882,6 +2031,7 @@
                 saveHistoryToStorage(allData);
                 renderHistoryList();
                 renderHistoryChart();
+                if (getHistorySyncUrl()) pushHistoryToCloud(true);
             }
         }
 
@@ -1927,6 +2077,13 @@
             renderFoodList(e.target.value);
         });
 
+        document.getElementById('historySyncUrl').addEventListener('change', () => {
+            saveHistorySyncUrl(getHistorySyncUrl());
+        });
+        document.getElementById('btnCreateHistorySync').addEventListener('click', createHistorySyncLink);
+        document.getElementById('btnPullHistorySync').addEventListener('click', () => { pullHistoryFromCloud(false); });
+        document.getElementById('btnPushHistorySync').addEventListener('click', () => { pushHistoryToCloud(false); });
+
         document.getElementById('closeModal').addEventListener('click', () => {
             document.getElementById('detailModal').style.display = 'none';
         });
@@ -1952,9 +2109,11 @@
         // Inicializar
         initializeFoods();
         loadConfigFromStorage();
+        loadHistorySyncUrl();
         recalcBMRObjective();
         renderHistoryList();
         renderHistoryChart();
+        if (getHistorySyncUrl()) pullHistoryFromCloud(true);
         window.addEventListener('resize', renderHistoryChart);
     </script>
 </body>
