@@ -1,3 +1,130 @@
+# Contexto de trabajo
+
+## Última actualización
+- Fecha: 2026-03-04
+- Archivo base capturado: `index.html`
+
+## Conversación
+1. Usuario: "crea un file donde guardes todo el contexto de nuestra conversacion y el index que tengo guardado ahora, y lo vas actualizando con todos los cambios"
+2. Acción: Se creó `CONTEXTO_CONVERSACION.md` para centralizar contexto y snapshot del `index.html`.
+3. Usuario: "quiero que toda la pagina tenga un diseno mas bbonito y colores verdes, manteniendo la estructura y las formulas etc, solo hacer un cambio mas elegante y pro en el diseno"
+4. Acción: Se aplicó rediseño visual profesional en gama verde, sin modificar estructura ni fórmulas/lógica.
+5. Usuario: "en el grafico diario lla linea de objetivo Kcal tiene que ser azul, los titulos de las etiquetas no tienen que ser en negrita, en letra simple mas delgada, lo msimo con los totales, los encabezados de las tablas letra mas pequena"
+6. Acción: Se ajustó la línea de objetivo kcal a azul, se redujo el peso tipográfico de etiquetas y totales, y se disminuyó el tamaño de encabezados de tabla.
+7. Usuario: "no hace falta displayar eso en las etiquetas de las comidas: Alimentos cargados: 25, las letras de los totales del mismo tamano que el encabezado, el encabezado ahora puede estar en negrita, no displayes esto tampooc: Nota: valores \"por 100g\"."
+8. Acción: Se ocultó el estado de alimentos cargados, se eliminaron las notas "por 100g", se igualó tamaño tipográfico de totales con encabezado de comidas y se dejó encabezado en negrita.
+9. Usuario: "cuando te pida cambios lee del contexto no hace falta que revises todo el codigo siempre, a menos que te lo pida"
+10. Acción: Se acordó partir del contexto y evitar revisar todo el código salvo necesidad puntual.
+11. Usuario: "los titulos resumen diario, desayuno, comida snacks y cena, letras mas delgaditas, ahora estan muy gordas. el historial, quiero que lo gusardes de alguna manera con la finalidad de que si accedo a la web desdel telefono tenga acceso a ello tambien"
+12. Acción: Se bajó el grosor de títulos `h2` de tarjetas y se agregó sincronización compartible por URL (`?sync=...`) para abrir la misma URL en teléfono y cargar/subir historial en la nube.
+13. Usuario: "quiero que cortes el grafico diario y lo posiciones en la pestana de historial... y añadir 3 círculos tipo actividad"
+14. Acción: Se movió el gráfico diario al tab Historial en columna derecha, se dejó listado de registros a la izquierda en la misma fila, y en Tracker se añadieron 3 anillos concéntricos de progreso (proteínas, carbs, grasas) pintados proporcionalmente según gramos consumidos vs gramos ideales.
+15. Usuario: "quiero que el color del circulo de las proteinas sea rojo, el de las carbs verde"
+16. Acción: Se cambió color del anillo de proteínas a rojo y del anillo de carbs a verde (anillo y leyenda).
+17. Usuario: "la etiqueta del anillo tiene que tener el mismo tamano que la etiqueta de resumen diario, y los colores de los anillos mas pastel"
+18. Acción: Se igualó el tamaño de etiquetas del bloque de anillos al tamaño de etiquetas de resumen diario y se cambiaron los colores de anillos/leyenda a tonos pastel.
+19. Usuario: "la etiqueta de los circulos debe tener el mismo tamano que la etiqueta de resumen diario, puedes reducir el tamano de los circulos con tal de encajar la etiqueta"
+20. Acción: Se redujo el tamaño visual del bloque de círculos y se alineó el texto de etiquetas/valores de leyenda al mismo tamaño y peso de las etiquetas de resumen diario.
+
+## Cambios de diseño y comportamiento (estado actual)
+- Paleta y diseño general en verde elegante.
+- Línea de `Objetivo kcal` en azul en leyenda y canvas.
+- Etiquetas en peso de fuente más fino (sin negrita marcada).
+- Totales de tablas de comidas con tamaño igual al encabezado.
+- Encabezados en negrita y tamaño reducido.
+- Estado `Alimentos cargados: N` oculto en tarjetas de comidas.
+- Eliminadas las notas `Nota: valores "por 100g"` en las cuatro comidas.
+- Títulos de tarjetas (`Resumen diario`, `Desayuno`, `Comida`, `Merienda/Snacks`, `Cena`) con trazo más delgado.
+- Historial con soporte de enlace compartible por URL usando parámetro `sync`.
+- Gráfico diario movido a pestaña `Historial` en panel derecho con registros a la izquierda.
+- Panel de anillos en `Tracker` (3 círculos concéntricos):
+  - Proteínas: pastel rojo.
+  - Carbs: pastel verde.
+  - Grasas: pastel naranja.
+  - Progreso proporcional a `consumido / ideal` con tope 100%.
+- Etiquetas del bloque de anillos ajustadas al mismo tamaño que etiquetas de resumen diario.
+- Tamaño de círculos reducido para mejorar encaje visual con etiquetas.
+- Sin cambios en la lógica de cálculo de macros/fórmulas.
+
+
+## Último ajuste
+- Usuario: "la pestana de anillos diarios de macros debe ser mas pequena"
+- Acción: se redujo el tamaño visual de la tarjeta de anillos (`.rings-slot`) y del bloque interno de círculos (`.rings-wrap`) para que el panel se vea más compacto.
+
+
+## Último ajuste
+- Usuario: "quiero que sea igual de ancha que la pestana comida e igual de larga de resumen diario"
+- Acción: se hizo la tarjeta de anillos de ancho completo dentro de su columna (igual a cards de comidas en ancho de panel) y se configuró `tracker-top` para estirar alturas, de modo que quede alineada en alto con "Resumen diario".
+
+
+## Último ajuste
+- Usuario: "ahora vamos a solucionar el historial... no quiero tener el link o la URL para verlo desdel telefono"
+- Acción: se eliminó la UI manual de sincronización (input + botones + manejo de URL en interfaz) y se dejó sincronización automática interna para historial al guardar/cargar.
+- Nota técnica: la sincronización automática usa un endpoint fijo configurado en código (`HISTORY_SYNC_AUTO_URL`).
+
+
+## Último ajuste
+- Usuario: "si accedo a la pagina desde incognito no veo el historial"
+- Acción: se añadió sincronización automática de arranque para historial (`syncHistoryAcrossDevices`) que:
+  - descarga historial de nube,
+  - hace merge con historial local,
+  - guarda el resultado localmente,
+  - y vuelve a subirlo para mantener ambos entornos alineados.
+- Objetivo: que el historial aparezca también en sesiones incógnito/dispositivos al iniciar.
+
+
+## Último ajuste
+- Usuario: "esto es lo que veo en la pantalla de incognito: No hay datos guardados aún"
+- Acción: se corrigió el endpoint fijo de sincronización automática de historial a un identificador compatible para acceso compartido sin UI manual.
+- Nota de migración: para subir el historial antiguo al endpoint compartido, hace falta abrir una vez la sesión normal (donde ya tienes datos) para que se haga el push automático inicial.
+
+
+## Último ajuste
+- Usuario: "me sale no hay datos guardados aun y Sin datos guardados para graficar"
+- Acción: se forzó el uso de un único endpoint fijo de historial para todas las sesiones (normal/incógnito/dispositivos), ignorando URLs antiguas guardadas localmente que podían desalinear la fuente de datos.
+- Resultado esperado: ambos modos consultan/suben al mismo origen de historial.
+
+
+## Último ajuste
+- Usuario: "sigue sin aparecer nada"
+- Acción: se cambió la estrategia de sincronización de historial a backend propio del proyecto:
+  - Frontend ahora usa `HISTORY_API_URL = '/api/history'`.
+  - Se eliminaron dependencias de sincronización externa por URL manual.
+  - Se añadió servidor API local con persistencia en archivo `history.json`.
+- Archivos añadidos:
+  - `server.py` (API + estáticos, recomendado)
+  - `server.js` (alternativa Node)
+  - `history.json` (almacenamiento compartido del historial)
+- Requisito operativo: abrir la app desde el servidor (`http://localhost:3000`) para que el historial se comparta entre sesiones/dispositivos.
+
+
+## Último ajuste
+- Usuario: "tan pronto como reinicio el incognito pantalla pierdo el historial" / "sigue sin aparecer".
+- Acción: se reforzó el flujo de persistencia y sync:
+  - `saveDailyData` ahora espera (`await`) a que termine la subida antes de confirmar guardado.
+  - `deleteHistoryItem` también espera sincronización.
+  - Se añadió indicador visible de estado en Historial (`#historySyncNote`) con mensajes de sincronización/errores.
+  - `syncHistoryAcrossDevices` ahora reporta estado y errores de conexión.
+- Objetivo: evitar cierres rápidos de incógnito antes de completar upload y facilitar diagnóstico en pantalla.
+
+
+## Último ajuste
+- Usuario: "Datos guardados localmente..., pero falló la sincronización"
+- Acción:
+  - Se mejoraron mensajes de error de sync con detalle HTTP.
+  - `HISTORY_API_URL` ahora detecta `file://` y usa `http://localhost:3000/api/history`.
+  - Se habilitó CORS en `server.py` y `server.js` (GET/PUT/OPTIONS) para permitir sync desde `file://` y otros orígenes locales.
+- Resultado esperado: guardado/sync funcional entre sesión normal e incógnito siempre que el servidor local esté ejecutándose.
+
+
+## Último ajuste
+- Usuario: "No se pudo subir el historial al servidor"
+- Acción: se añadió diagnóstico detallado de error de sincronización en pantalla y mensajes contextualizados.
+  - Nuevo formateo de error (`formatHistorySyncError`) que indica explícitamente cuando no hay conexión al servidor y sugiere `python3 server.py`.
+  - El estado de historial ahora muestra la causa concreta (no solo mensaje genérico).
+
+## Snapshot actual de index.html
+```html
 <!doctype html>
 <html lang="es">
 
@@ -2316,3 +2443,4 @@
 </body>
 
 </html>
+```
