@@ -123,6 +123,15 @@
   - Nuevo formateo de error (`formatHistorySyncError`) que indica explícitamente cuando no hay conexión al servidor y sugiere `python3 server.py`.
   - El estado de historial ahora muestra la causa concreta (no solo mensaje genérico).
 
+
+## Último ajuste
+- Usuario: "Guardado local ok... No se pudo subir (405)"
+- Acción:
+  - Frontend: fallback de subida `PUT -> POST` para `/api/history`.
+  - Frontend: mensaje de error específico para `405` indicando abrir con `python3 server.py` en `http://localhost:3000`.
+  - Backend local (`server.py` y `server.js`): soporte de `POST /api/history` y CORS actualizado para `POST`.
+- Resultado esperado: elimina bloqueo por 405 en servidores que no aceptan PUT.
+
 ## Snapshot actual de index.html
 ```html
 <!doctype html>
@@ -1763,6 +1772,9 @@
             if (!raw || raw === 'Failed to fetch') {
                 return `No hay conexión con el servidor (${HISTORY_API_URL}). Inicia el servidor con: python3 server.py`;
             }
+            if (raw.includes('(405)')) {
+                return `El servidor actual no permite guardar historial (405). Abre esta web con: python3 server.py y entra a http://localhost:3000`;
+            }
             return raw;
         }
 
@@ -1797,11 +1809,19 @@
                 updatedAt: new Date().toISOString()
             };
             try {
-                const res = await fetch(HISTORY_API_URL, {
+                let res = await fetch(HISTORY_API_URL, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+                if (res.status === 405) {
+                    // Fallback for servers that only allow POST.
+                    res = await fetch(HISTORY_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
                 if (!res.ok) throw new Error(`No se pudo subir (${res.status})`);
                 if (!silent) alert('✓ Historial subido.');
                 lastHistorySyncError = '';

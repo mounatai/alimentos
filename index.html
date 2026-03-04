@@ -1205,14 +1205,18 @@
                 <section class="card rings-slot" aria-label="Progreso diario de macros">
                     <h3>Anillos diarios de macros</h3>
                     <div class="rings-wrap">
-                        <svg class="activity-rings" viewBox="0 0 220 220" aria-label="Progreso de proteínas, carbs y grasas">
+                        <svg class="activity-rings" viewBox="0 0 220 220"
+                            aria-label="Progreso de proteínas, carbs y grasas">
                             <circle class="ring-track" cx="110" cy="110" r="84" stroke-width="16"></circle>
                             <circle class="ring-track" cx="110" cy="110" r="64" stroke-width="16"></circle>
                             <circle class="ring-track" cx="110" cy="110" r="44" stroke-width="16"></circle>
 
-                            <circle id="ringProt" class="ring-progress ring-prot" cx="110" cy="110" r="84" stroke-width="16"></circle>
-                            <circle id="ringCarb" class="ring-progress ring-carb" cx="110" cy="110" r="64" stroke-width="16"></circle>
-                            <circle id="ringFat" class="ring-progress ring-fat" cx="110" cy="110" r="44" stroke-width="16"></circle>
+                            <circle id="ringProt" class="ring-progress ring-prot" cx="110" cy="110" r="84"
+                                stroke-width="16"></circle>
+                            <circle id="ringCarb" class="ring-progress ring-carb" cx="110" cy="110" r="64"
+                                stroke-width="16"></circle>
+                            <circle id="ringFat" class="ring-progress ring-fat" cx="110" cy="110" r="44"
+                                stroke-width="16"></circle>
                         </svg>
                         <div class="rings-center">
                             <div id="ringsCenterValue" class="rings-center-value">0%</div>
@@ -1220,9 +1224,12 @@
                         </div>
                     </div>
                     <div class="rings-legend">
-                        <span><span><i style="background:#ef9a9a;"></i>Proteínas</span><b id="ringProtText">0 / 130g</b></span>
-                        <span><span><i style="background:#a5d6a7;"></i>Carbs</span><b id="ringCarbText">0 / 170g</b></span>
-                        <span><span><i style="background:#ffcc80;"></i>Grasas</span><b id="ringFatText">0 / 50g</b></span>
+                        <span><span><i style="background:#ef9a9a;"></i>Proteínas</span><b id="ringProtText">0 /
+                                130g</b></span>
+                        <span><span><i style="background:#a5d6a7;"></i>Carbs</span><b id="ringCarbText">0 /
+                                170g</b></span>
+                        <span><span><i style="background:#ffcc80;"></i>Grasas</span><b id="ringFatText">0 /
+                                50g</b></span>
                     </div>
                 </section>
             </div>
@@ -1364,7 +1371,8 @@
                 <h2>📋 Historial de guardados</h2>
                 <div class="history-sync">
                     <p class="history-sync-title">☁️ Sincronización automática (móvil + ordenador)</p>
-                    <p class="history-sync-note" id="historySyncNote">El historial se sincroniza automáticamente sin usar campo de enlace ni
+                    <p class="history-sync-note" id="historySyncNote">El historial se sincroniza automáticamente sin
+                        usar campo de enlace ni
                         botones manuales.</p>
                 </div>
                 <div class="history-main">
@@ -1636,6 +1644,9 @@
             if (!raw || raw === 'Failed to fetch') {
                 return `No hay conexión con el servidor (${HISTORY_API_URL}). Inicia el servidor con: python3 server.py`;
             }
+            if (raw.includes('(405)')) {
+                return `El servidor actual no permite guardar historial (405). Abre esta web con: python3 server.py y entra a http://localhost:3000`;
+            }
             return raw;
         }
 
@@ -1670,11 +1681,19 @@
                 updatedAt: new Date().toISOString()
             };
             try {
-                const res = await fetch(HISTORY_API_URL, {
+                let res = await fetch(HISTORY_API_URL, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+                if (res.status === 405) {
+                    // Fallback for servers that only allow POST.
+                    res = await fetch(HISTORY_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                }
                 if (!res.ok) throw new Error(`No se pudo subir (${res.status})`);
                 if (!silent) alert('✓ Historial subido.');
                 lastHistorySyncError = '';

@@ -45,7 +45,7 @@ def write_history(items):
 class Handler(BaseHTTPRequestHandler):
     def _set_cors(self):
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS')
+        self.send_header('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
 
     def _send_json(self, status, payload):
@@ -114,6 +114,9 @@ class Handler(BaseHTTPRequestHandler):
         items = parsed if isinstance(parsed, list) else parsed.get('history', [])
         write_history(items)
         return self._send_json(200, {'ok': True, 'count': len(items) if isinstance(items, list) else 0})
+
+    def do_POST(self):
+        return self.do_PUT()
 
 
 if __name__ == '__main__':

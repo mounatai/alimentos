@@ -46,7 +46,7 @@ function sendJson(res, status, payload) {
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'no-store',
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, PUT, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
   });
   res.end(body);
@@ -72,7 +72,7 @@ function serveStatic(req, res, pathname) {
     res.writeHead(200, {
       'Content-Type': MIME[ext] || 'application/octet-stream',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, PUT, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type'
     });
     res.end(data);
@@ -85,7 +85,7 @@ const server = http.createServer((req, res) => {
   if (req.method === 'OPTIONS') {
     res.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, PUT, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type'
     });
     res.end();
@@ -97,7 +97,7 @@ const server = http.createServer((req, res) => {
       return sendJson(res, 200, { history: readHistory(), updatedAt: new Date().toISOString() });
     }
 
-    if (req.method === 'PUT') {
+    if (req.method === 'PUT' || req.method === 'POST') {
       let body = '';
       req.on('data', chunk => { body += chunk; });
       req.on('end', () => {
