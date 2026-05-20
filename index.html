@@ -2189,6 +2189,8 @@
         const GITHUB_OWNER = 'mounatai';
         const GITHUB_REPO = 'alimentos';
         const GITHUB_BRANCH = 'main';
+        const GITHUB_TOKEN_STORAGE_KEY = 'githubWriteToken';
+        const GITHUB_API_BASE = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents`;
         const GITHUB_HISTORY_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/history.json`;
         const GITHUB_FOODS_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/alimentos.json`;
         const HISTORY_API_URL = (location.protocol === 'file:' ? 'http://localhost:3001/api/history' : '/api/history');
@@ -2203,6 +2205,67 @@
         function round0(n) { return Math.round(n); }
         function slugId(name) { return name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-áéíóúüñ]/gi, "").slice(0, 60) || ("food-" + Math.random().toString(16).slice(2)); }
         function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
+
+        function getStoredGitHubToken() {
+            return localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || '';
+        }
+
+        function getOrAskGitHubToken() {
+            const stored = getStoredGitHubToken();
+            if (stored) return stored;
+            const token = prompt('Para escribir en GitHub, pega un token personal con permiso Contents: Read and write. Se guarda solo en este navegador.');
+            const clean = String(token || '').trim();
+            if (!clean) return '';
+            localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, clean);
+            return clean;
+        }
+
+        async function githubGetFileSha(path, token) {
+            const url = `${GITHUB_API_BASE}/${encodeURIComponent(path)}?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
+            const res = await fetch(url, {
+                headers: {
+                    'Accept': 'application/vnd.github+json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (res.status === 404) return '';
+            if (!res.ok) throw new Error(`GitHub GET ${path} falló (${res.status})`);
+            const payload = await res.json();
+            return String(payload?.sha || '');
+        }
+
+        async function githubPutJsonFile(path, data, message, silent = true) {
+            const token = getOrAskGitHubToken();
+            if (!token) {
+                if (!silent) alert('No hay token GitHub configurado.');
+                return false;
+            }
+
+            const sha = await githubGetFileSha(path, token);
+            const jsonText = `${JSON.stringify(data, null, 2)}\n`;
+            const body = {
+                message,
+                branch: GITHUB_BRANCH,
+                content: btoa(unescape(encodeURIComponent(jsonText)))
+            };
+            if (sha) body.sha = sha;
+
+            const url = `${GITHUB_API_BASE}/${encodeURIComponent(path)}`;
+            const res = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/vnd.github+json',
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+            if (!res.ok) {
+                const errText = await res.text();
+                throw new Error(`GitHub PUT ${path} falló (${res.status}): ${errText.slice(0, 160)}`);
+            }
+            return true;
+        }
 
         const MEALS = ["desayuno", "comida", "merienda", "cena"];
         const mealState = {}; MEALS.forEach(m => mealState[m] = []);
@@ -2644,6 +2707,9 @@
             renderFoodsInMeals();
             renderFoodList();
 
+            const shouldPullFoods = !IS_GITHUB_PAGES || !stored;
+            if (!shouldPullFoods) return;
+
             pullFoodsFromCloud().then((pulled) => {
                 if (!pulled) return;
                 FOODS = FOODS.map(food => {
@@ -2783,8 +2849,15 @@
 
         async function pushFoodsToCloud(silent = true) {
             if (IS_GITHUB_PAGES) {
-                lastFoodsSyncError = 'GitHub Pages es de solo lectura (sin backend).';
-                return false;
+                try {
+                    await githubPutJsonFile('alimentos.json', FOODS, 'Update alimentos.json from GitHub Pages', silent);
+                    lastFoodsSyncError = '';
+                    return true;
+                } catch (e) {
+                    lastFoodsSyncError = String(e?.message || e || 'Error al escribir alimentos en GitHub');
+                    if (!silent) alert(`No se pudo actualizar alimentos en GitHub. ${lastFoodsSyncError}`);
+                    return false;
+                }
             }
             const payload = {
                 foods: FOODS,
@@ -2842,7 +2915,6 @@
         }
 
         function scheduleFoodsSync() {
-            if (IS_GITHUB_PAGES) return;
             if (foodsSyncTimer) clearTimeout(foodsSyncTimer);
             foodsSyncTimer = setTimeout(() => {
                 foodsSyncTimer = null;
@@ -2888,8 +2960,15 @@
 
         async function pushHistoryToCloud(silent = false) {
             if (IS_GITHUB_PAGES) {
-                lastHistorySyncError = 'GitHub Pages es de solo lectura (sin backend).';
-                return false;
+                try {
+                    await githubPutJsonFile('history.json', loadHistoryFromStorage(), 'Update history.json from GitHub Pages', silent);
+                    lastHistorySyncError = '';
+                    return true;
+                } catch (e) {
+                    lastHistorySyncError = String(e?.message || e || 'Error al escribir historial en GitHub');
+                    if (!silent) alert(`No se pudo actualizar historial en GitHub. ${lastHistorySyncError}`);
+                    return false;
+                }
             }
             const payload = {
                 history: loadHistoryFromStorage(),
@@ -3813,25 +3892,36 @@
             if (tabId === 'history') {
                 if (!historyTabSyncing) {
                     historyTabSyncing = true;
-                    pullHistoryFromCloud(true).finally(() => {
+                    const finishHistory = () => {
                         renderHistoryList();
                         renderHistoryChart();
-                    });
+                    };
+                    if (IS_GITHUB_PAGES) {
+                        const hasLocalHistory = loadHistoryFromStorage().length > 0;
+                        if (!hasLocalHistory) pullHistoryFromCloud(true).finally(finishHistory);
+                        else finishHistory();
+                    } else {
+                        pullHistoryFromCloud(true).finally(finishHistory);
+                    }
                     setTimeout(() => { historyTabSyncing = false; }, 2000);
                 }
             }
 
             if (tabId === 'database') {
-                pullFoodsFromCloud().then((pulled) => {
-                    if (!pulled) return;
-                    FOODS = FOODS.map(food => {
-                        const limits = normalizeFoodMinMax(food);
-                        return { ...food, minGr: limits.minGr, maxGr: limits.maxGr };
-                    });
-                    renderFoodList(document.getElementById('searchFood')?.value || '');
-                    renderFoodsInMeals();
-                    recalcBMRObjective();
-                }).catch(() => { });
+                const hasLocalFoods = Array.isArray(FOODS) && FOODS.length > 0;
+                const shouldPullOnDatabaseTab = !IS_GITHUB_PAGES || !hasLocalFoods;
+                if (shouldPullOnDatabaseTab) {
+                    pullFoodsFromCloud().then((pulled) => {
+                        if (!pulled) return;
+                        FOODS = FOODS.map(food => {
+                            const limits = normalizeFoodMinMax(food);
+                            return { ...food, minGr: limits.minGr, maxGr: limits.maxGr };
+                        });
+                        renderFoodList(document.getElementById('searchFood')?.value || '');
+                        renderFoodsInMeals();
+                        recalcBMRObjective();
+                    }).catch(() => { });
+                }
             }
         }
 
@@ -3865,7 +3955,7 @@
 
             document.getElementById('btnSave').addEventListener('click', async () => {
                 await saveDailyData();
-                syncHistoryAcrossDevices().catch(() => { });
+                if (!IS_GITHUB_PAGES) syncHistoryAcrossDevices().catch(() => { });
             });
             document.getElementById('btnCalcRations').addEventListener('click', calculateOptimalRations);
             document.getElementById('btnSaveConfig').addEventListener('click', () => {
