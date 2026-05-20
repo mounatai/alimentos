@@ -1,23 +1,311 @@
 [
   {
+    "id": "aceite",
+    "name": "Aceite",
+    "per": {
+      "kcal": 900,
+      "fat": 100,
+      "carb": 0,
+      "prot": 0
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "aguacate",
+    "name": "Aguacate",
+    "per": {
+      "kcal": 160,
+      "fat": 14,
+      "carb": 8,
+      "prot": 2
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "almendras",
+    "name": "Almendras",
+    "per": {
+      "kcal": 604,
+      "fat": 54,
+      "carb": 4,
+      "prot": 20
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "arándanos",
+    "name": "Arándanos",
+    "per": {
+      "kcal": 57,
+      "fat": 0,
+      "carb": 0,
+      "prot": 0.7
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "arroz",
+    "name": "Arroz",
+    "per": {
+      "kcal": 350,
+      "fat": 1,
+      "carb": 80,
+      "prot": 7
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
     "name": "Avena",
     "kcal": 372,
     "fat": 7,
     "carb": 58.7,
-    "prot": 13.5
+    "prot": 13.5,
+    "minGr": 50,
+    "maxGr": 150,
+    "per": {
+      "kcal": 372,
+      "fat": 7,
+      "carb": 59,
+      "prot": 13.5
+    }
+  },
+  {
+    "id": "colágeno",
+    "name": "Colágeno",
+    "per": {
+      "kcal": 373,
+      "fat": 0,
+      "carb": 0,
+      "prot": 91
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "dátiles",
+    "name": "Dátiles",
+    "per": {
+      "kcal": 290,
+      "fat": 1,
+      "carb": 75,
+      "prot": 2.5
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "gambas",
+    "name": "Gambas",
+    "per": {
+      "kcal": 108,
+      "fat": 2,
+      "carb": 0,
+      "prot": 20.3
+    },
+    "minGr": 50,
+    "maxGr": 150
   },
   {
     "name": "Huevo",
     "kcal": 141,
     "fat": 9.7,
     "carb": 0.7,
-    "prot": 13
+    "prot": 13,
+    "minGr": 50,
+    "maxGr": 150,
+    "per": {
+      "kcal": 141,
+      "fat": 10,
+      "carb": 1,
+      "prot": 13
+    }
+  },
+  {
+    "id": "leche-avena-dm",
+    "name": "Leche Avena DM",
+    "per": {
+      "kcal": 157,
+      "fat": 2,
+      "carb": 2,
+      "prot": 3.2
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "leche-de-soja-oficina",
+    "name": "Leche de soja Oficina",
+    "per": {
+      "kcal": 35,
+      "fat": 1,
+      "carb": 3,
+      "prot": 2.4
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "miel",
+    "name": "Miel",
+    "per": {
+      "kcal": 330,
+      "fat": 0,
+      "carb": 82,
+      "prot": 0.6
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "mortadela-pavo",
+    "name": "Mortadela pavo",
+    "per": {
+      "kcal": 150,
+      "fat": 8,
+      "carb": 5,
+      "prot": 15
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "nueces",
+    "name": "Nueces",
+    "per": {
+      "kcal": 654,
+      "fat": 65,
+      "carb": 14,
+      "prot": 15
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "pastel-proteico",
+    "name": "Pastel Proteico",
+    "per": {
+      "kcal": 0,
+      "fat": 0,
+      "carb": 0,
+      "prot": 0
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "patata",
+    "name": "Patata",
+    "per": {
+      "kcal": 77,
+      "fat": 0,
+      "carb": 17,
+      "prot": 2
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "plátano",
+    "name": "Plátano",
+    "per": {
+      "kcal": 89,
+      "fat": 0,
+      "carb": 23,
+      "prot": 1.2
+    },
+    "minGr": 50,
+    "maxGr": 150
   },
   {
     "name": "Pollo",
     "kcal": 165,
     "fat": 2.5,
     "carb": 0,
-    "prot": 22
+    "prot": 22,
+    "minGr": 50,
+    "maxGr": 150,
+    "per": {
+      "kcal": 165,
+      "fat": 3,
+      "carb": 0,
+      "prot": 22
+    }
+  },
+  {
+    "id": "protein-80-plus",
+    "name": "Protein 80 Plus",
+    "per": {
+      "kcal": 365,
+      "fat": 2,
+      "carb": 7,
+      "prot": 80
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "salmón",
+    "name": "Salmón",
+    "per": {
+      "kcal": 190,
+      "fat": 12,
+      "carb": 0,
+      "prot": 18.4
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "semillas-de-chía",
+    "name": "Semillas de chía",
+    "per": {
+      "kcal": 464,
+      "fat": 34,
+      "carb": 3,
+      "prot": 22
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "semillas-lino",
+    "name": "Semillas lino",
+    "per": {
+      "kcal": 524,
+      "fat": 42,
+      "carb": 3,
+      "prot": 20
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "skyr",
+    "name": "Skyr",
+    "per": {
+      "kcal": 62,
+      "fat": 0,
+      "carb": 11,
+      "prot": 5.4
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
+    "id": "ternera",
+    "name": "Ternera",
+    "per": {
+      "kcal": 140,
+      "fat": 3,
+      "carb": 0,
+      "prot": 25
+    },
+    "minGr": 50,
+    "maxGr": 150
   }
 ]
