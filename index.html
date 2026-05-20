@@ -2228,8 +2228,11 @@
         async function githubGetFileSha(path, token) {
             const url = `${GITHUB_API_BASE}/${encodeURIComponent(path)}?ref=${encodeURIComponent(GITHUB_BRANCH)}`;
             const res = await fetch(url, {
+                cache: 'no-store',
                 headers: {
                     'Accept': 'application/vnd.github+json',
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
                     'Authorization': `Bearer ${token}`
                 }
             });
@@ -2269,10 +2272,13 @@
                 return res;
             };
 
-            let res = await attemptPut();
-            if (!res.ok && (res.status === 409 || res.status === 422)) {
-                // Retry once with fresh sha in case another device updated first.
+            let res = null;
+            for (let i = 0; i < 4; i++) {
                 res = await attemptPut();
+                if (res.ok) break;
+                if (res.status !== 409 && res.status !== 422) break;
+                // Another device/browser wrote first; wait briefly and retry with fresh sha.
+                await new Promise(resolve => setTimeout(resolve, 180 * (i + 1)));
             }
             if (!res.ok) {
                 const errText = await res.text();
