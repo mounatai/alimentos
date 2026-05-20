@@ -75,19 +75,6 @@
     }
   },
   {
-    "id": "chrome",
-    "name": "chrome",
-    "category": "Otros",
-    "per": {
-      "kcal": 33,
-      "fat": 3,
-      "carb": 3,
-      "prot": 3
-    },
-    "minGr": 50,
-    "maxGr": 150
-  },
-  {
     "id": "colágeno",
     "name": "Colágeno",
     "per": {
