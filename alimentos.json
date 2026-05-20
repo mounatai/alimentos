@@ -126,6 +126,19 @@
     }
   },
   {
+    "id": "iphone",
+    "name": "Iphone",
+    "category": "Otros",
+    "per": {
+      "kcal": 575,
+      "fat": 5,
+      "carb": 6,
+      "prot": 6
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
     "id": "leche-avena-dm",
     "name": "Leche Avena DM",
     "per": {
