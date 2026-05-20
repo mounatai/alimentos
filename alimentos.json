@@ -75,6 +75,19 @@
     }
   },
   {
+    "id": "chrome",
+    "name": "chrome",
+    "category": "Otros",
+    "per": {
+      "kcal": 33,
+      "fat": 3,
+      "carb": 3,
+      "prot": 3
+    },
+    "minGr": 50,
+    "maxGr": 150
+  },
+  {
     "id": "colágeno",
     "name": "Colágeno",
     "per": {
@@ -124,19 +137,6 @@
       "carb": 1,
       "prot": 13
     }
-  },
-  {
-    "id": "iphone",
-    "name": "Iphone",
-    "category": "Otros",
-    "per": {
-      "kcal": 575,
-      "fat": 5,
-      "carb": 6,
-      "prot": 6
-    },
-    "minGr": 50,
-    "maxGr": 150
   },
   {
     "id": "leche-avena-dm",
