@@ -2206,6 +2206,11 @@
         function slugId(name) { return name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-áéíóúüñ]/gi, "").slice(0, 60) || ("food-" + Math.random().toString(16).slice(2)); }
         function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
 
+        function githubRawWithBust(url) {
+            const sep = url.includes('?') ? '&' : '?';
+            return `${url}${sep}t=${Date.now()}`;
+        }
+
         function getStoredGitHubToken() {
             return localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || '';
         }
@@ -2707,9 +2712,6 @@
             renderFoodsInMeals();
             renderFoodList();
 
-            const shouldPullFoods = !IS_GITHUB_PAGES || !stored;
-            if (!shouldPullFoods) return;
-
             pullFoodsFromCloud().then((pulled) => {
                 if (!pulled) return;
                 FOODS = FOODS.map(food => {
@@ -2792,7 +2794,7 @@
 
         function getHistoryApiCandidates() {
             if (IS_GITHUB_PAGES) {
-                return [GITHUB_HISTORY_RAW_URL];
+                return [githubRawWithBust(GITHUB_HISTORY_RAW_URL)];
             }
             const urls = [];
             const seen = new Set();
@@ -2821,7 +2823,7 @@
 
         function getFoodsApiCandidates() {
             if (IS_GITHUB_PAGES) {
-                return [GITHUB_FOODS_RAW_URL];
+                return [githubRawWithBust(GITHUB_FOODS_RAW_URL)];
             }
             const urls = [];
             const seen = new Set();
@@ -3502,6 +3504,14 @@
                 }
             };
 
+            // In GitHub Pages mode, first pull latest history from repo to avoid overwriting
+            // entries created from another device/browser, then append and push.
+            if (IS_GITHUB_PAGES) {
+                try {
+                    await pullHistoryFromCloud(true);
+                } catch (e) { }
+            }
+
             let allData = loadHistoryFromStorage();
             allData.push(dataToSave);
             saveHistoryToStorage(allData);
@@ -3509,11 +3519,6 @@
 
             renderHistoryList();
             renderHistoryChart();
-            if (IS_GITHUB_PAGES) {
-                setHistorySyncNote('Guardado local completado. En GitHub Pages no se sube automáticamente al repositorio.');
-                alert(`✓ Datos guardados localmente: ${dateStr} ${timeStr}`);
-                return;
-            }
             setHistorySyncNote('Guardando y subiendo historial...');
             const pushed = await pushHistoryToCloud(true);
             if (pushed) {
@@ -3896,32 +3901,22 @@
                         renderHistoryList();
                         renderHistoryChart();
                     };
-                    if (IS_GITHUB_PAGES) {
-                        const hasLocalHistory = loadHistoryFromStorage().length > 0;
-                        if (!hasLocalHistory) pullHistoryFromCloud(true).finally(finishHistory);
-                        else finishHistory();
-                    } else {
-                        pullHistoryFromCloud(true).finally(finishHistory);
-                    }
+                    pullHistoryFromCloud(true).finally(finishHistory);
                     setTimeout(() => { historyTabSyncing = false; }, 2000);
                 }
             }
 
             if (tabId === 'database') {
-                const hasLocalFoods = Array.isArray(FOODS) && FOODS.length > 0;
-                const shouldPullOnDatabaseTab = !IS_GITHUB_PAGES || !hasLocalFoods;
-                if (shouldPullOnDatabaseTab) {
-                    pullFoodsFromCloud().then((pulled) => {
-                        if (!pulled) return;
-                        FOODS = FOODS.map(food => {
-                            const limits = normalizeFoodMinMax(food);
-                            return { ...food, minGr: limits.minGr, maxGr: limits.maxGr };
-                        });
-                        renderFoodList(document.getElementById('searchFood')?.value || '');
-                        renderFoodsInMeals();
-                        recalcBMRObjective();
-                    }).catch(() => { });
-                }
+                pullFoodsFromCloud().then((pulled) => {
+                    if (!pulled) return;
+                    FOODS = FOODS.map(food => {
+                        const limits = normalizeFoodMinMax(food);
+                        return { ...food, minGr: limits.minGr, maxGr: limits.maxGr };
+                    });
+                    renderFoodList(document.getElementById('searchFood')?.value || '');
+                    renderFoodsInMeals();
+                    recalcBMRObjective();
+                }).catch(() => { });
             }
         }
 
