@@ -7,19 +7,6 @@
     "prot": 13.5
   },
   {
-    "id": "chrome",
-    "name": "chrome",
-    "category": "Otros",
-    "per": {
-      "kcal": 3,
-      "fat": 3,
-      "carb": 3,
-      "prot": 3
-    },
-    "minGr": 50,
-    "maxGr": 150
-  },
-  {
     "name": "Huevo",
     "kcal": 141,
     "fat": 9.7,

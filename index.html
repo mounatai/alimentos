@@ -3580,6 +3580,7 @@
             historyList.innerHTML = '';
             [...allData].reverse().forEach((data, idx) => {
                 const originalIdx = allData.length - 1 - idx;
+                const entryKey = getHistoryEntryKey(data);
                 let totalKcal = 0, totalProt = 0, totalCarb = 0, totalFat = 0;
                 MEALS.forEach(meal => {
                     (data.meals[meal] || []).forEach(item => {
@@ -3604,9 +3605,15 @@
                     </div>
                     <div class="history-item-actions">
                         <button type="button" class="btn-view" onclick="showHistoryDetail(${originalIdx})">Ver</button>
-                        <button type="button" class="btn-delete" onclick="deleteHistoryItem(${originalIdx})">Eliminar</button>
+                        <button type="button" class="btn-delete btn-delete-history" data-delete-key="${encodeURIComponent(entryKey)}">Eliminar</button>
                     </div>
                 `;
+                const deleteBtn = item.querySelector('.btn-delete-history');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', () => {
+                        deleteHistoryItemByKey(entryKey);
+                    });
+                }
                 historyList.appendChild(item);
             });
         }
@@ -3757,11 +3764,21 @@
             drawLineSeries(ctx, x, y, consumed, minY, maxY, '#66bb6a');
         }
 
-        async function deleteHistoryItem(idx) {
+        async function deleteHistoryItemByKey(entryKey) {
             if (confirm('¿Eliminar?')) {
-                let allData = loadHistoryFromStorage();
-                allData.splice(idx, 1);
-                saveHistoryToStorage(allData);
+                if (IS_GITHUB_PAGES) {
+                    // Pull first so deletion is applied over the latest server version.
+                    await pullHistoryFromCloud(true).catch(() => { });
+                }
+
+                const allData = loadHistoryFromStorage();
+                const nextData = allData.filter(entry => getHistoryEntryKey(entry) !== entryKey);
+                if (nextData.length === allData.length) {
+                    setHistorySyncNote('No se encontró el registro para eliminar.', true);
+                    return;
+                }
+
+                saveHistoryToStorage(nextData);
                 renderHistoryList();
                 renderHistoryChart();
                 setHistorySyncNote('Actualizando historial en servidor...');
@@ -3769,6 +3786,13 @@
                 if (pushed) setHistorySyncNote('Historial sincronizado correctamente.');
                 else setHistorySyncNote(`No se pudo actualizar historial en servidor. ${lastHistorySyncError}`, true);
             }
+        }
+
+        async function deleteHistoryItem(idx) {
+            const allData = loadHistoryFromStorage();
+            const row = allData[idx];
+            if (!row) return;
+            await deleteHistoryItemByKey(getHistoryEntryKey(row));
         }
 
         function showHistoryDetail(idx) {
