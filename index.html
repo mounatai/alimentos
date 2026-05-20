@@ -2044,6 +2044,10 @@
                     <p class="history-sync-note" id="historySyncNote">El historial se sincroniza automáticamente sin
                         usar campo de enlace ni
                         botones manuales.</p>
+                    <div style="margin-top:8px;">
+                        <button type="button" class="btn-primary" id="btnRetryGithubSync">Reintentar sincronización
+                            GitHub</button>
+                    </div>
                 </div>
                 <div class="history-main">
                     <div class="history-list" id="historyList">
@@ -2200,6 +2204,8 @@
         let lastHistorySyncError = '';
         let lastFoodsSyncError = '';
         let foodsSyncTimer = null;
+        let pendingHistoryGithubSync = false;
+        let pendingFoodsGithubSync = false;
 
         function round1(n) { return Math.round((n + Number.EPSILON) * 10) / 10; }
         function round0(n) { return Math.round(n); }
@@ -2812,6 +2818,29 @@
             note.style.color = isError ? '#c62828' : '';
         }
 
+        async function retryPendingGithubSync() {
+            if (!IS_GITHUB_PAGES) return;
+            let anyPending = pendingHistoryGithubSync || pendingFoodsGithubSync;
+            if (!anyPending) {
+                setHistorySyncNote('No hay cambios pendientes por sincronizar.');
+                return;
+            }
+
+            setHistorySyncNote('Reintentando sincronización pendiente...');
+            if (pendingFoodsGithubSync) {
+                const okFoods = await pushFoodsToCloud(true);
+                if (okFoods) pendingFoodsGithubSync = false;
+            }
+            if (pendingHistoryGithubSync) {
+                const okHistory = await pushHistoryToCloud(true);
+                if (okHistory) pendingHistoryGithubSync = false;
+            }
+
+            anyPending = pendingHistoryGithubSync || pendingFoodsGithubSync;
+            if (!anyPending) setHistorySyncNote('Sincronización pendiente completada.');
+            else setHistorySyncNote('Sigue habiendo cambios pendientes. Revisa conexión e inténtalo de nuevo.', true);
+        }
+
         function formatHistorySyncError(err) {
             const raw = String(err?.message || err || '').trim();
             if (!raw || raw === 'Failed to fetch') {
@@ -2886,9 +2915,11 @@
                 try {
                     await githubPutJsonFile('alimentos.json', FOODS, 'Update alimentos.json from GitHub Pages', silent);
                     lastFoodsSyncError = '';
+                    pendingFoodsGithubSync = false;
                     return true;
                 } catch (e) {
                     lastFoodsSyncError = String(e?.message || e || 'Error al escribir alimentos en GitHub');
+                    pendingFoodsGithubSync = true;
                     if (!silent) alert(`No se pudo actualizar alimentos en GitHub. ${lastFoodsSyncError}`);
                     return false;
                 }
@@ -2915,6 +2946,7 @@
                     }
                     if (!res.ok) throw new Error(`No se pudo subir alimentos (${res.status}) en ${endpoint}`);
                     lastFoodsSyncError = '';
+                    pendingFoodsGithubSync = false;
                     if (!silent) alert('✓ Base de alimentos sincronizada.');
                     return true;
                 } catch (e) {
@@ -2922,6 +2954,7 @@
                 }
             }
             lastFoodsSyncError = String(lastErr?.message || lastErr || 'Error al sincronizar alimentos');
+            pendingFoodsGithubSync = true;
             if (!silent) alert(`No se pudo sincronizar la base de alimentos. Detalle: ${lastFoodsSyncError}`);
             return false;
         }
@@ -2997,12 +3030,14 @@
                 try {
                     await githubPutJsonFile('history.json', loadHistoryFromStorage(), 'Update history.json from GitHub Pages', silent);
                     lastHistorySyncError = '';
+                    pendingHistoryGithubSync = false;
                     return true;
                 } catch (e) {
                     const raw = String(e?.message || e || 'Error al escribir historial en GitHub');
                     lastHistorySyncError = raw.includes('Failed to fetch')
                         ? 'Error de red al conectar con GitHub. Revisa conexión y vuelve a intentar.'
                         : raw;
+                    pendingHistoryGithubSync = true;
                     if (!silent) alert(`No se pudo actualizar historial en GitHub. ${lastHistorySyncError}`);
                     return false;
                 }
@@ -3031,12 +3066,14 @@
                     if (!res.ok) throw new Error(`No se pudo subir (${res.status}) en ${endpoint}`);
                     if (!silent) alert('✓ Historial subido.');
                     lastHistorySyncError = '';
+                    pendingHistoryGithubSync = false;
                     return true;
                 } catch (e) {
                     lastErr = e;
                 }
             }
             lastHistorySyncError = formatHistorySyncError(lastErr);
+            pendingHistoryGithubSync = true;
             if (!silent) alert(`No se pudo subir el historial. Detalle: ${lastHistorySyncError}`);
             return false;
         }
@@ -4080,6 +4117,17 @@
 
             document.getElementById('closeModal').addEventListener('click', () => {
                 document.getElementById('detailModal').style.display = 'none';
+            });
+
+            const retryBtn = document.getElementById('btnRetryGithubSync');
+            if (retryBtn) {
+                retryBtn.addEventListener('click', () => {
+                    retryPendingGithubSync().catch(() => { });
+                });
+            }
+
+            window.addEventListener('online', () => {
+                retryPendingGithubSync().catch(() => { });
             });
 
             ['peso', 'altura', 'edad', 'idealProt', 'idealCarb', 'idealFat'].forEach(id => {
