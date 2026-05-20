@@ -2273,12 +2273,20 @@
             };
 
             let res = null;
+            let lastNetworkErr = null;
             for (let i = 0; i < 4; i++) {
-                res = await attemptPut();
-                if (res.ok) break;
-                if (res.status !== 409 && res.status !== 422) break;
-                // Another device/browser wrote first; wait briefly and retry with fresh sha.
-                await new Promise(resolve => setTimeout(resolve, 180 * (i + 1)));
+                try {
+                    res = await attemptPut();
+                    if (res.ok) break;
+                    if (res.status !== 409 && res.status !== 422) break;
+                } catch (err) {
+                    lastNetworkErr = err;
+                }
+                // Retry on transient conflicts/network failures with small backoff.
+                await new Promise(resolve => setTimeout(resolve, 240 * (i + 1)));
+            }
+            if (!res && lastNetworkErr) {
+                throw new Error(`No se pudo conectar con GitHub (${String(lastNetworkErr?.message || lastNetworkErr)})`);
             }
             if (!res.ok) {
                 const errText = await res.text();
@@ -2991,7 +2999,10 @@
                     lastHistorySyncError = '';
                     return true;
                 } catch (e) {
-                    lastHistorySyncError = String(e?.message || e || 'Error al escribir historial en GitHub');
+                    const raw = String(e?.message || e || 'Error al escribir historial en GitHub');
+                    lastHistorySyncError = raw.includes('Failed to fetch')
+                        ? 'Error de red al conectar con GitHub. Revisa conexión y vuelve a intentar.'
+                        : raw;
                     if (!silent) alert(`No se pudo actualizar historial en GitHub. ${lastHistorySyncError}`);
                     return false;
                 }
@@ -3784,7 +3795,13 @@
                 setHistorySyncNote('Actualizando historial en servidor...');
                 const pushed = await pushHistoryToCloud(true);
                 if (pushed) setHistorySyncNote('Historial sincronizado correctamente.');
-                else setHistorySyncNote(`No se pudo actualizar historial en servidor. ${lastHistorySyncError}`, true);
+                else {
+                    if (IS_GITHUB_PAGES) {
+                        setHistorySyncNote(`Registro eliminado localmente. Pendiente de sincronizar con GitHub: ${lastHistorySyncError}`, true);
+                    } else {
+                        setHistorySyncNote(`No se pudo actualizar historial en servidor. ${lastHistorySyncError}`, true);
+                    }
+                }
             }
         }
 
