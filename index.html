@@ -2246,28 +2246,37 @@
                 return false;
             }
 
-            const sha = await githubGetFileSha(path, token);
-            const jsonText = `${JSON.stringify(data, null, 2)}\n`;
-            const body = {
-                message,
-                branch: GITHUB_BRANCH,
-                content: btoa(unescape(encodeURIComponent(jsonText)))
-            };
-            if (sha) body.sha = sha;
+            const attemptPut = async () => {
+                const sha = await githubGetFileSha(path, token);
+                const jsonText = `${JSON.stringify(data, null, 2)}\n`;
+                const body = {
+                    message,
+                    branch: GITHUB_BRANCH,
+                    content: btoa(unescape(encodeURIComponent(jsonText)))
+                };
+                if (sha) body.sha = sha;
 
-            const url = `${GITHUB_API_BASE}/${encodeURIComponent(path)}`;
-            const res = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/vnd.github+json',
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            });
+                const url = `${GITHUB_API_BASE}/${encodeURIComponent(path)}`;
+                const res = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/vnd.github+json',
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                return res;
+            };
+
+            let res = await attemptPut();
+            if (!res.ok && (res.status === 409 || res.status === 422)) {
+                // Retry once with fresh sha in case another device updated first.
+                res = await attemptPut();
+            }
             if (!res.ok) {
                 const errText = await res.text();
-                throw new Error(`GitHub PUT ${path} falló (${res.status}): ${errText.slice(0, 160)}`);
+                throw new Error(`GitHub PUT ${path} falló (${res.status}): ${errText.slice(0, 220)}`);
             }
             return true;
         }
@@ -2417,10 +2426,14 @@
             }, 0);
         }
 
-        function deleteSelectedFoods() {
+        async function deleteSelectedFoods() {
             const ids = [...dbSelectedFoodIds];
             if (!ids.length) return;
             if (!confirm(`¿Eliminar ${ids.length} alimento(s)?`)) return;
+
+            if (IS_GITHUB_PAGES) {
+                await pullFoodsFromCloud().catch(() => { });
+            }
 
             FOODS = FOODS.filter(food => !dbSelectedFoodIds.has(food.id));
             MEALS.forEach(meal => {
@@ -2434,6 +2447,11 @@
             recalcBMRObjective();
             refreshDbActionMenuState();
             setDbActionsMenu(false);
+
+            const pushed = await pushFoodsToCloud(IS_GITHUB_PAGES ? false : true);
+            if (!pushed && !IS_GITHUB_PAGES) {
+                alert(`No se pudo sincronizar alimentos: ${lastFoodsSyncError}`);
+            }
         }
 
         function saveInlineFoodField(foodId, field, value) {
@@ -3352,8 +3370,11 @@
             document.getElementById('foodFormSection').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function deleteFood(foodId) {
+        async function deleteFood(foodId) {
             if (confirm('¿Estás seguro?')) {
+                if (IS_GITHUB_PAGES) {
+                    await pullFoodsFromCloud().catch(() => { });
+                }
                 FOODS = FOODS.filter(f => f.id !== foodId);
                 MEALS.forEach(meal => {
                     mealState[meal] = mealState[meal].filter(row => row.foodId !== foodId);
@@ -3362,10 +3383,14 @@
                 renderFoodList();
                 renderFoodsInMeals();
                 recalcBMRObjective();
+                const pushed = await pushFoodsToCloud(IS_GITHUB_PAGES ? false : true);
+                if (!pushed && !IS_GITHUB_PAGES) {
+                    alert(`No se pudo sincronizar alimentos: ${lastFoodsSyncError}`);
+                }
             }
         }
 
-        function saveFood() {
+        async function saveFood() {
             const name = document.getElementById('formFoodName').value.trim();
             const kcal = Number(document.getElementById('formFoodKcal').value || 0);
             const fat = Number(document.getElementById('formFoodFat').value || 0);
@@ -3380,6 +3405,10 @@
             if (!name || kcal === 0) {
                 alert('Completa el nombre y calorías');
                 return;
+            }
+
+            if (IS_GITHUB_PAGES) {
+                await pullFoodsFromCloud().catch(() => { });
             }
 
             if (editingFoodId) {
@@ -3408,7 +3437,10 @@
             renderFoodList();
             renderFoodsInMeals();
             document.getElementById('foodFormSection').style.display = 'none';
-            alert('✓ Alimento guardado');
+
+            const pushed = await pushFoodsToCloud(IS_GITHUB_PAGES ? false : true);
+            if (pushed) alert('✓ Alimento guardado');
+            else alert(`Alimento guardado localmente, pero falló la sincronización: ${lastFoodsSyncError}`);
         }
 
         function recalcBMRObjective() {
