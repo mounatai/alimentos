@@ -8,7 +8,7 @@ from urllib.parse import unquote, urlparse
 ROOT = Path(__file__).resolve().parent
 HISTORY_PATH = ROOT / 'history.json'
 HOST = '0.0.0.0'
-PORT = 3000
+PORT = 3001
 
 MIME = {
     '.html': 'text/html; charset=utf-8',

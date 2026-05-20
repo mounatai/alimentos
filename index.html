@@ -7,85 +7,96 @@
     <title>Tracker de alimentos y macros</title>
     <style>
         :root {
-            --olive: #4d9b62;
-            --cream: #f2f8f1;
-            --dark: #183225;
-            --gold: #2f7d4e;
-            --panel: #ffffff;
-            --panel2: #f4fbf5;
-            --line: rgba(24, 50, 37, .16);
-            --text: var(--dark);
-            --muted: rgba(24, 50, 37, .68);
-            --shadow: 0 14px 30px rgba(23, 56, 40, .14);
-            --base-fz: .92em;
+            --primary: #0a84ff;
+            --primary-dark: #0060df;
+            --background: #eef2f7;
+            --surface: rgba(255, 255, 255, .82);
+            --surface-alt: #f8f9fc;
+            --border: rgba(15, 23, 42, .12);
+            --line: rgba(15, 23, 42, .12);
+            --dark: #0f172a;
+            --text: #0f172a;
+            --muted: #64748b;
+            --shadow: 0 20px 40px rgba(15, 23, 42, .10);
+            --radius: 22px;
+            --gold: #0a84ff;
+            --olive: #0a84ff;
+            --cream: #f6f8fc;
+            --head-fz: 1.02rem;
+            --base-fz: .95rem;
             --mini-fz: .86em;
-            --dropdown-scale: .92;
-            --head-fz: 1.08em;
             --kv-gap: 10px;
             --kv-width: 130px;
+            --dropdown-scale: .94;
+            --font-main: "SF Pro Display", "SF Pro Text", "Avenir Next", "Segoe UI", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            background-image:
+                radial-gradient(1100px 620px at -10% -20%, rgba(10, 132, 255, .15), transparent 60%),
+                radial-gradient(900px 540px at 120% -30%, rgba(45, 212, 191, .14), transparent 62%),
+                linear-gradient(180deg, #f6f8fc 0%, #edf2f8 100%);
+            color: var(--text);
+            font-family: var(--font-main);
+            font-size: var(--base-fz);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         html {
             font-size: 16px
         }
 
-        body {
-            margin: 0;
-            font-family: "Avenir Next", "Segoe UI", "Trebuchet MS", Arial, sans-serif;
-            background:
-                radial-gradient(900px 480px at 15% 0%, rgba(77, 155, 98, .22) 0%, transparent 55%),
-                radial-gradient(1000px 520px at 85% 0%, rgba(47, 125, 78, .15) 0%, transparent 58%),
-                var(--cream);
-            color: var(--text);
-            font-size: var(--base-fz);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
         .container {
-            max-width: 1100px;
+            max-width: 1180px;
             margin: 0 auto;
-            padding: 16px
+            padding: 20px
         }
 
         h2 {
             margin: 14px 0 8px;
-            font-size: var(--head-fz)
+            font-size: var(--head-fz);
+            letter-spacing: -.01em;
+            font-weight: 580;
         }
 
         .tabs-header {
             display: flex;
             gap: 12px;
             margin-bottom: 20px;
-            border-bottom: 2px solid var(--line);
+            border: 1px solid var(--line);
             background: rgba(255, 255, 255, .65);
-            border-radius: 14px;
-            padding: 6px 10px 0;
-            backdrop-filter: blur(2px);
+            border-radius: 16px;
+            padding: 8px;
+            backdrop-filter: blur(18px) saturate(160%);
+            box-shadow: 0 8px 26px rgba(15, 23, 42, .08);
         }
 
         .tab-button {
             background: transparent;
-            border: none;
-            padding: 12px 20px;
+            border: 1px solid transparent;
+            padding: 10px 18px;
             cursor: pointer;
             font-size: 1em;
-            font-weight: 700;
+            font-weight: 560;
             color: var(--muted);
-            border-bottom: 3px solid transparent;
-            transition: color .15s, border-color .15s, background .15s;
-            margin-bottom: -2px;
-            border-radius: 10px 10px 0 0;
+            transition: color .2s, border-color .2s, background .2s, box-shadow .2s;
+            border-radius: 12px;
         }
 
         .tab-button.active {
-            color: var(--gold);
-            border-bottom-color: var(--gold);
+            color: var(--dark);
+            background: rgba(255, 255, 255, .94);
+            border-color: rgba(10, 132, 255, .22);
+            box-shadow: 0 6px 18px rgba(10, 132, 255, .14);
         }
 
         .tab-button:hover {
             color: var(--dark);
-            background: rgba(47, 125, 78, .08);
+            background: rgba(255, 255, 255, .72);
         }
 
         .tab-content {
@@ -94,6 +105,33 @@
 
         .tab-content.active {
             display: block;
+        }
+
+        .day-planner {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .78);
+        }
+
+        .day-planner-label {
+            font-size: .9em;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .day-planner-date {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 7px 10px;
+            font-size: .88em;
+            color: var(--text);
+            background: #fff;
         }
 
         .top {
@@ -105,13 +143,19 @@
         }
 
         .card {
-            background: linear-gradient(180deg, var(--panel) 0%, var(--panel2) 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .84) 0%, rgba(255, 255, 255, .72) 100%);
             border: 1px solid var(--line);
-            border-radius: 16px;
-            padding: 16px;
-            min-width: 280px;
-            flex: 1 1 360px;
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
+            padding: 20px;
+            transition: transform .2s, box-shadow .2s, border-color .2s;
+            backdrop-filter: blur(18px) saturate(145%);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 24px 44px rgba(15, 23, 42, .14);
+            border-color: rgba(10, 132, 255, .20);
         }
 
         .card h2 {
@@ -143,9 +187,9 @@
 
         .kv {
             border: 1px solid var(--line);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 10px;
-            background: rgba(77, 155, 98, .08);
+            background: rgba(248, 250, 252, .85);
             font-size: var(--mini-fz);
             width: var(--kv-width);
             box-sizing: border-box;
@@ -161,8 +205,8 @@
             width: 100%;
             padding: 8px 10px;
             border-radius: 10px;
-            border: 1px solid rgba(24, 50, 37, .18);
-            background: #fff;
+            border: 1px solid rgba(15, 23, 42, .14);
+            background: rgba(255, 255, 255, .94);
             color: var(--text);
             outline: none;
             font-size: .98em;
@@ -178,12 +222,13 @@
 
         .kv input[type="number"] {
             -moz-appearance: textfield;
+            appearance: textfield;
         }
 
         .kv input:focus,
         .kv select:focus {
-            border-color: rgba(47, 125, 78, .85);
-            box-shadow: 0 0 0 3px rgba(47, 125, 78, .14);
+            border-color: rgba(10, 132, 255, .55);
+            box-shadow: 0 0 0 3px rgba(10, 132, 255, .18);
         }
 
         .kv label {
@@ -222,7 +267,7 @@
             padding: 7.2px;
             border-radius: 14px;
             min-width: 108px;
-            background: linear-gradient(180deg, #fff 0%, rgba(47, 125, 78, .14) 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .95) 0%, rgba(234, 244, 255, .88) 100%);
             border: 1px solid var(--line);
             box-shadow: var(--shadow);
         }
@@ -265,8 +310,8 @@
 
         th {
             text-align: left;
-            color: rgba(24, 50, 37, .8);
-            background: rgba(77, 155, 98, .12);
+            color: rgba(15, 23, 42, .78);
+            background: rgba(241, 245, 249, .96);
             font-weight: 700;
             font-size: .68em;
             text-transform: uppercase;
@@ -278,7 +323,7 @@
         }
 
         table tbody tr:hover {
-            background: rgba(77, 155, 98, .08)
+            background: rgba(10, 132, 255, .05)
         }
 
         tr:last-child td {
@@ -292,7 +337,7 @@
         .totals td {
             font-weight: 600;
             font-size: .64em;
-            background: rgba(47, 125, 78, .12)
+            background: rgba(10, 132, 255, .08)
         }
 
         .actions {
@@ -312,31 +357,60 @@
             display: flex;
             gap: 8px;
             align-items: center;
+            position: relative;
+        }
+
+        .food-picker {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 30;
+            width: min(860px, 95vw);
+            background: rgba(255, 255, 255, .96);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: 0 20px 32px rgba(15, 23, 42, .16);
+            padding: 10px;
+            backdrop-filter: blur(14px) saturate(150%);
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .food-picker.open {
+            display: flex;
+        }
+
+        .card[data-meal="comida"] .food-picker,
+        .card[data-meal="cena"] .food-picker {
+            left: auto;
+            right: 0;
+            transform: none;
+        }
+
+        .card[data-meal].picker-open {
+            z-index: 45;
         }
 
         button {
-            border: none;
-            background: linear-gradient(180deg, #fff 0%, rgba(47, 125, 78, .14) 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(243, 246, 250, .98));
             color: var(--dark);
-            padding: 8px 10px;
+            border: 1px solid rgba(15, 23, 42, .14);
             border-radius: 12px;
+            padding: 9px 14px;
+            font-size: .95rem;
+            font-weight: 560;
             cursor: pointer;
-            font-weight: 800;
-            font-size: 1.02em;
-            line-height: 1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: background .15s, transform .06s, box-shadow .15s;
-            box-shadow: 0 1px 0 rgba(24, 50, 37, .12), 0 4px 12px rgba(47, 125, 78, .12);
+            transition: background .2s, box-shadow .2s, border-color .2s, transform .08s;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, .08);
         }
 
-        button:active {
-            transform: translateY(1px)
-        }
-
-        button:focus {
-            outline: 2px solid rgba(47, 125, 78, .22)
+        button:hover {
+            background: rgba(255, 255, 255, .98);
+            border-color: rgba(10, 132, 255, .30);
+            box-shadow: 0 10px 18px rgba(10, 132, 255, .18);
+            transform: translateY(-1px);
         }
 
         .btn-add {
@@ -345,10 +419,10 @@
             height: 36px;
             width: 36px;
             padding: 0;
-            background: var(--gold);
+            background: linear-gradient(180deg, #3ba3ff 0%, #0a84ff 100%);
             color: #fff;
             font-weight: 900;
-            border: 1px solid rgba(47, 125, 78, .4);
+            border: 1px solid rgba(10, 132, 255, .45);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -356,7 +430,7 @@
         }
 
         .btn-add:hover {
-            background: #26673f
+            background: linear-gradient(180deg, #3298f5 0%, #006fe0 100%);
         }
 
         .btn-del {
@@ -398,24 +472,162 @@
             color: #26673f;
         }
 
-        select.foodSelect {
-            font-size: 95%;
-            transform: scale(var(--dropdown-scale));
-            min-width: 110px;
-            width: 180px;
-            max-width: 240px;
-            padding-left: 10px;
-            padding-right: 8px;
-            border-radius: 10px;
-            border: 1px solid rgba(47, 125, 78, .26);
-            background: #fff;
-            min-height: 36px;
+        .food-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .food-category {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .88);
+            overflow: hidden;
+        }
+
+        .food-category-title {
+            margin: 0;
+            padding: 7px 10px;
+            font-size: .8em;
+            font-weight: 800;
+            letter-spacing: .02em;
+            border-bottom: 1px solid rgba(15, 23, 42, .08);
+        }
+
+        .food-cat-proteinas .food-category-title {
+            color: #c67aa0;
+            background: #fbe4ef;
+        }
+
+        .food-cat-carbohidratos .food-category-title {
+            color: #b07a56;
+            background: #fdebd9;
+        }
+
+        .food-cat-fibra .food-category-title {
+            color: #8a9152;
+            background: #f0f3d6;
+        }
+
+        .food-cat-verdura .food-category-title {
+            color: #4f8f72;
+            background: #dff3e9;
+        }
+
+        .food-cat-fruta .food-category-title {
+            color: #c56a61;
+            background: #fce3de;
+        }
+
+        .food-cat-lacteos .food-category-title {
+            color: #5f88b6;
+            background: #e4eef9;
+        }
+
+        .food-cat-grasas .food-category-title {
+            color: #b78641;
+            background: #fdf2d7;
+        }
+
+        .food-cat-otros .food-category-title {
+            color: #7a7ea8;
+            background: #ecebfa;
+        }
+
+        .food-category-items {
+            padding: 8px 10px;
+            display: grid;
+            gap: 6px;
+        }
+
+        .food-item-check {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .8em;
+            color: var(--text);
+            cursor: pointer;
+            line-height: 1.2;
+        }
+
+        .food-item-check input {
+            margin: 0;
+            width: 14px;
+            height: 14px;
+            accent-color: #3ba3ff;
+        }
+
+        .btn-food-check {
+            min-height: 34px;
+            width: 100%;
+            padding: 8px 12px;
+            background: linear-gradient(180deg, #61c882 0%, #3aa85f 100%);
+            color: #fff;
+            border: 1px solid rgba(58, 168, 95, .42);
+            font-weight: 800;
+            box-shadow: 0 8px 16px rgba(58, 168, 95, .24);
+        }
+
+        .btn-food-check:hover {
+            background: linear-gradient(180deg, #56bd77 0%, #339a55 100%);
+            border-color: rgba(58, 168, 95, .56);
+            box-shadow: 0 10px 18px rgba(58, 168, 95, .30);
         }
 
         .status {
             margin-top: 6px;
             color: var(--muted);
             font-size: .95em
+        }
+
+        .meal-rings {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .meal-mini-ring {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .meal-mini-ring-track {
+            --ring-pct: 0;
+            --ring-color: #8aa8ff;
+            width: 72px;
+            height: 72px;
+            border-radius: 999px;
+            background:
+                radial-gradient(circle at center, #fff 56%, transparent 57%),
+                conic-gradient(var(--ring-color) calc(var(--ring-pct) * 1%), rgba(148, 163, 184, .24) 0%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .06);
+        }
+
+        .meal-mini-ring-value {
+            font-size: .8em;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1;
+        }
+
+        .meal-mini-ring-unit {
+            font-size: .62em;
+            color: var(--muted);
+            text-transform: lowercase;
+            margin-top: 2px;
+        }
+
+        .meal-mini-ring-label {
+            font-size: .68em;
+            color: var(--muted);
+            font-weight: 700;
         }
 
         .foodsStatus {
@@ -442,11 +654,12 @@
 
         .graph-slot {
             min-height: 120px;
-            border: 1px dashed var(--line);
+            border: 1px solid var(--line);
             color: var(--muted);
-            font-weight: 700;
+            font-weight: 560;
             padding: 12px;
             box-sizing: border-box;
+            background: rgba(255, 255, 255, .72);
         }
 
         .graph-slot h3 {
@@ -538,7 +751,7 @@
 
         .ring-track {
             fill: none;
-            stroke: rgba(24, 50, 37, .13);
+            stroke: rgba(148, 163, 184, .28);
         }
 
         .ring-progress {
@@ -550,15 +763,15 @@
         }
 
         .ring-prot {
-            stroke: #ef9a9a;
+            stroke: #ff8f87;
         }
 
         .ring-carb {
-            stroke: #a5d6a7;
+            stroke: #8bd9a6;
         }
 
         .ring-fat {
-            stroke: #ffcc80;
+            stroke: #ffc98a;
         }
 
         .rings-center {
@@ -616,7 +829,9 @@
         }
 
         .card[data-meal] {
-            position: relative
+            position: relative;
+            overflow: visible;
+            z-index: 1;
         }
 
         .card[data-meal]::before {
@@ -649,6 +864,7 @@
 
         .mealBody input[type="number"] {
             -moz-appearance: textfield;
+            appearance: textfield;
         }
 
         .mealBody input[type="number"]:focus {
@@ -680,9 +896,9 @@
         .history-sync {
             margin-bottom: 12px;
             border: 1px solid var(--line);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 12px;
-            background: #fff;
+            background: rgba(255, 255, 255, .78);
         }
 
         .history-sync-title {
@@ -726,8 +942,8 @@
             max-height: 500px;
             overflow-y: auto;
             border: 1px solid var(--line);
-            border-radius: 12px;
-            background: #fff;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .82);
         }
 
         .history-item {
@@ -745,7 +961,7 @@
         }
 
         .history-item:hover {
-            background: rgba(77, 155, 98, .08);
+            background: rgba(10, 132, 255, .06);
         }
 
         .history-item-info {
@@ -789,7 +1005,7 @@
         }
 
         .btn-view:hover {
-            background: rgba(47, 125, 78, .16);
+            background: rgba(10, 132, 255, .14);
         }
 
         .btn-delete {
@@ -805,7 +1021,7 @@
         }
 
         .btn-delete:hover {
-            background: rgba(47, 125, 78, .14);
+            background: rgba(255, 69, 58, .11);
             color: #d00;
         }
 
@@ -832,15 +1048,16 @@
         }
 
         .modal-content {
-            background-color: var(--cream);
+            background: rgba(255, 255, 255, .92);
             margin: 10% auto;
             padding: 20px;
             border: 1px solid var(--line);
-            border-radius: 14px;
+            border-radius: 18px;
             max-width: 700px;
             max-height: 80vh;
             overflow-y: auto;
             box-shadow: var(--shadow);
+            backdrop-filter: blur(20px) saturate(160%);
         }
 
         .modal-header {
@@ -894,6 +1111,13 @@
             flex-wrap: wrap;
         }
 
+        .db-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
         .db-search {
             flex: 1;
             min-width: 200px;
@@ -915,48 +1139,241 @@
         }
 
         .food-list {
-            max-height: 600px;
-            overflow-y: auto;
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            background: #fff;
+            max-height: none;
+            overflow: visible;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            display: grid;
+            gap: 14px;
         }
 
-        .food-item {
-            padding: 14px 16px;
+        .food-db-group {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, .92);
+        }
+
+        .food-db-group-title {
+            margin: 0;
+            padding: 9px 12px;
+            font-size: .86em;
+            font-weight: 800;
+            letter-spacing: .02em;
+            border-bottom: 1px solid rgba(15, 23, 42, .08);
+        }
+
+        .food-db-group.food-cat-proteinas .food-db-group-title {
+            color: #c67aa0;
+            background: #fbe4ef;
+        }
+
+        .food-db-group.food-cat-carbohidratos .food-db-group-title {
+            color: #b07a56;
+            background: #fdebd9;
+        }
+
+        .food-db-group.food-cat-fibra .food-db-group-title {
+            color: #8a9152;
+            background: #f0f3d6;
+        }
+
+        .food-db-group.food-cat-verdura .food-db-group-title {
+            color: #4f8f72;
+            background: #dff3e9;
+        }
+
+        .food-db-group.food-cat-fruta .food-db-group-title {
+            color: #c56a61;
+            background: #fce3de;
+        }
+
+        .food-db-group.food-cat-lacteos .food-db-group-title {
+            color: #5f88b6;
+            background: #e4eef9;
+        }
+
+        .food-db-group.food-cat-grasas .food-db-group-title {
+            color: #b78641;
+            background: #fdf2d7;
+        }
+
+        .food-db-group.food-cat-otros .food-db-group-title {
+            color: #7a7ea8;
+            background: #ecebfa;
+        }
+
+        .food-db-table-wrap {
+            overflow: visible;
+        }
+
+        .food-db-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            min-width: 0;
+            font-size: .9em;
+        }
+
+        .food-db-table th,
+        .food-db-table td {
+            padding: 4px 5px;
             border-bottom: 1px solid var(--line);
-            display: flex;
-            justify-content: space-between;
+            text-align: left;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        .food-db-table td {
+            vertical-align: middle;
+        }
+
+        .food-db-table th {
+            background: rgba(241, 245, 249, .98);
+            color: rgba(15, 23, 42, .76);
+            font-size: .66em;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+        }
+
+        .food-db-table th:nth-child(1),
+        .food-db-table td:nth-child(1) {
+            width: 28px;
+        }
+
+        .food-db-table th:nth-child(2),
+        .food-db-table td:nth-child(2) {
+            width: 18%;
+        }
+
+        .food-db-table th:nth-child(3),
+        .food-db-table td:nth-child(3) {
+            width: 12%;
+        }
+
+        .food-db-table th:nth-child(4),
+        .food-db-table td:nth-child(4),
+        .food-db-table th:nth-child(5),
+        .food-db-table td:nth-child(5),
+        .food-db-table th:nth-child(6),
+        .food-db-table td:nth-child(6),
+        .food-db-table th:nth-child(7),
+        .food-db-table td:nth-child(7),
+        .food-db-table th:nth-child(8),
+        .food-db-table td:nth-child(8),
+        .food-db-table th:nth-child(9),
+        .food-db-table td:nth-child(9) {
+            width: 9%;
+        }
+
+        .food-db-table tbody tr:hover {
+            background: rgba(10, 132, 255, .06);
+        }
+
+        .food-db-actions {
+            display: inline-flex;
+            gap: 6px;
             align-items: center;
         }
 
-        .food-item:last-child {
-            border-bottom: none;
+        .food-db-checkbox-cell {
+            width: 34px;
+            text-align: center;
         }
 
-        .food-item:hover {
-            background: rgba(77, 155, 98, .08);
+        .food-db-row-checkbox {
+            width: 14px;
+            height: 14px;
+            margin: 0;
+            accent-color: #0a84ff;
         }
 
-        .food-item-info {
-            flex: 1;
+        .food-db-inline-input,
+        .food-category-select {
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 3px 5px;
+            font-size: .74em;
+            background: #fff;
+            color: var(--text);
         }
 
-        .food-item-name {
-            font-weight: 800;
-            color: var(--dark);
-            margin-bottom: 6px;
+        .food-db-inline-input:focus,
+        .food-category-select:focus {
+            border-color: rgba(10, 132, 255, .55);
+            box-shadow: 0 0 0 3px rgba(10, 132, 255, .14);
+            outline: none;
         }
 
-        .food-item-macros {
-            font-size: .9em;
-            color: var(--muted);
+        .food-db-inline-input:disabled,
+        .food-category-select:disabled {
+            background: rgba(248, 250, 252, .78);
+            color: rgba(15, 23, 42, .68);
+            border-color: rgba(15, 23, 42, .08);
         }
 
-        .food-item-actions {
-            display: flex;
-            gap: 8px;
-            margin-left: 12px;
+        .food-db-row-selected {
+            background: rgba(10, 132, 255, .05);
+        }
+
+        .food-db-row-editing {
+            background: rgba(58, 168, 95, .06);
+        }
+
+        .btn-db-menu {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .db-actions-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            z-index: 40;
+            min-width: 180px;
+            background: rgba(255, 255, 255, .98);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            box-shadow: 0 18px 32px rgba(15, 23, 42, .16);
+            overflow: hidden;
+        }
+
+        .db-actions-menu.open {
+            display: block;
+        }
+
+        .db-actions-menu button {
+            width: 100%;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        .db-actions-menu button:hover {
+            transform: none;
+        }
+
+        .db-actions-menu .menu-delete {
+            color: #a00;
+        }
+
+        .db-actions-menu .menu-delete:hover {
+            background: rgba(255, 69, 58, .10);
+        }
+
+        .db-actions-menu .menu-edit:hover {
+            background: rgba(10, 132, 255, .10);
         }
 
         .btn-edit {
@@ -972,7 +1389,7 @@
         }
 
         .btn-edit:hover {
-            background: rgba(47, 125, 78, .16);
+            background: rgba(10, 132, 255, .14);
         }
 
         .form-grid {
@@ -1015,7 +1432,7 @@
         }
 
         .btn-primary {
-            background: var(--gold);
+            background: linear-gradient(180deg, #3ba3ff 0%, #0a84ff 100%);
             color: #fff;
             padding: 10px 16px;
             border-radius: 10px;
@@ -1026,7 +1443,7 @@
         }
 
         .btn-primary:hover {
-            background: #26673f;
+            background: linear-gradient(180deg, #3298f5 0%, #006fe0 100%);
         }
 
         .btn-secondary {
@@ -1041,7 +1458,7 @@
         }
 
         .btn-secondary:hover {
-            background: rgba(77, 155, 98, .12);
+            background: rgba(10, 132, 255, .10);
             color: var(--dark);
         }
 
@@ -1061,6 +1478,50 @@
             gap: 8px;
             justify-content: center;
             margin-top: 16px;
+        }
+
+        .settings-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 14px;
+        }
+
+        .btn-save-config {
+            background: linear-gradient(180deg, #3ba3ff 0%, #0a84ff 100%);
+            color: #fff;
+            border: 1px solid rgba(10, 132, 255, .45);
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-size: .95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .2s, box-shadow .2s, transform .08s;
+            box-shadow: 0 6px 14px rgba(10, 132, 255, .25);
+        }
+
+        .btn-save-config:hover {
+            background: linear-gradient(180deg, #3298f5 0%, #006fe0 100%);
+            box-shadow: 0 10px 20px rgba(10, 132, 255, .38);
+            transform: translateY(-1px);
+        }
+
+        .btn-calc-rations {
+            background: linear-gradient(180deg, #3ba3ff 0%, #0a84ff 100%);
+            color: #fff;
+            border: 1px solid rgba(10, 132, 255, .45);
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-size: .97rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background .2s, box-shadow .2s, transform .08s;
+            box-shadow: 0 6px 14px rgba(10, 132, 255, .25);
+        }
+
+        .btn-calc-rations:hover {
+            background: linear-gradient(180deg, #3298f5 0%, #006fe0 100%);
+            box-shadow: 0 10px 20px rgba(10, 132, 255, .38);
+            transform: translateY(-1px);
         }
 
         .summary-row {
@@ -1089,24 +1550,24 @@
                 grid-template-columns: 1fr
             }
 
-            select.foodSelect {
-                width: 100%;
-                transform: none
+            .food-grid {
+                grid-template-columns: repeat(2, minmax(130px, 1fr));
+            }
+
+            .meal-rings {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .food-picker {
+                width: min(92vw, 360px);
             }
 
             .summary-box {
                 min-width: 100%
             }
 
-            .food-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .food-item-actions {
-                margin-left: 0;
-                margin-top: 12px;
-                width: 100%;
+            .food-db-table {
+                min-width: 0;
             }
 
             .form-grid {
@@ -1152,6 +1613,12 @@
         </div>
 
         <div id="tracker" class="tab-content active">
+            <div class="day-planner" aria-label="Planificador diario">
+                <span class="day-planner-label" id="activeDateLabel">Hoy</span>
+                <label for="activeDateInput" class="day-planner-label">📅</label>
+                <input id="activeDateInput" class="day-planner-date" type="date"
+                    aria-label="Seleccionar día para planificar comidas" />
+            </div>
             <div class="tracker-top">
                 <section class="card" aria-label="Resumen diario">
                     <h2>📊 Resumen diario</h2>
@@ -1199,6 +1666,9 @@
                         </div>
                     </div>
                     <div class="config-footer">
+                        <button type="button" class="btn-calc-rations" id="btnCalcRations"
+                            title="Calcular gramos óptimos para cada alimento según tus objetivos">🎯 Calcular
+                            Raciones</button>
                         <button type="button" class="btn-save" id="btnSave" title="Guardar datos del día">💾</button>
                     </div>
                 </section>
@@ -1238,8 +1708,15 @@
                 <section class="card" data-meal="desayuno">
                     <div class="actions">
                         <h2><span class="foodicon">☕️</span>Desayuno</h2>
-                        <div class="food-controls"><select class="foodSelect"></select><button type="button"
-                                class="btn-add" title="Añadir alimento">+</button></div>
+                        <div class="food-controls">
+                            <button type="button" class="btn-add btn-toggle-foods"
+                                title="Seleccionar alimentos">+</button>
+                            <div class="food-picker">
+                                <div class="foodGrid food-grid"></div>
+                                <button type="button" class="btn-food-check" title="Añadir alimentos seleccionados">✓
+                                    Añadir seleccionados</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="status foodsStatus">Cargando alimentos...</div>
                     <table style="margin-top:10px">
@@ -1254,24 +1731,59 @@
                             </tr>
                         </thead>
                         <tbody class="mealBody"></tbody>
-                        <tbody class="totals">
-                            <tr>
-                                <td>Totales</td>
-                                <td class="right totalKcal">0</td>
-                                <td class="right totalFat">0</td>
-                                <td class="right totalCarb">0</td>
-                                <td class="right totalProt">0</td>
-                                <td class="right totalGr">0</td>
-                            </tr>
-                        </tbody>
                     </table>
+                    <div class="meal-rings" aria-label="Totales en anillos">
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#66bb6a">
+                                <div>
+                                    <div class="meal-mini-ring-value totalKcal">0</div>
+                                    <div class="meal-mini-ring-unit">kcal</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Cal</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#ffc98a">
+                                <div>
+                                    <div class="meal-mini-ring-value totalFat">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Grasas</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#8bd9a6">
+                                <div>
+                                    <div class="meal-mini-ring-value totalCarb">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Carbs</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#ff8f87">
+                                <div>
+                                    <div class="meal-mini-ring-value totalProt">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Proteína</div>
+                        </div>
+                    </div>
                 </section>
 
                 <section class="card" data-meal="comida">
                     <div class="actions">
                         <h2><span class="foodicon">🍽️</span>Comida</h2>
-                        <div class="food-controls"><select class="foodSelect"></select><button type="button"
-                                class="btn-add" title="Añadir alimento">+</button></div>
+                        <div class="food-controls">
+                            <button type="button" class="btn-add btn-toggle-foods"
+                                title="Seleccionar alimentos">+</button>
+                            <div class="food-picker">
+                                <div class="foodGrid food-grid"></div>
+                                <button type="button" class="btn-food-check" title="Añadir alimentos seleccionados">✓
+                                    Añadir seleccionados</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="status foodsStatus">Cargando alimentos...</div>
                     <table style="margin-top:10px">
@@ -1286,24 +1798,59 @@
                             </tr>
                         </thead>
                         <tbody class="mealBody"></tbody>
-                        <tbody class="totals">
-                            <tr>
-                                <td>Totales</td>
-                                <td class="right totalKcal">0</td>
-                                <td class="right totalFat">0</td>
-                                <td class="right totalCarb">0</td>
-                                <td class="right totalProt">0</td>
-                                <td class="right totalGr">0</td>
-                            </tr>
-                        </tbody>
                     </table>
+                    <div class="meal-rings" aria-label="Totales en anillos">
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#66bb6a">
+                                <div>
+                                    <div class="meal-mini-ring-value totalKcal">0</div>
+                                    <div class="meal-mini-ring-unit">kcal</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Cal</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#ffc98a">
+                                <div>
+                                    <div class="meal-mini-ring-value totalFat">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Grasas</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#8bd9a6">
+                                <div>
+                                    <div class="meal-mini-ring-value totalCarb">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Carbs</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#ff8f87">
+                                <div>
+                                    <div class="meal-mini-ring-value totalProt">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Proteína</div>
+                        </div>
+                    </div>
                 </section>
 
                 <section class="card" data-meal="merienda">
                     <div class="actions">
                         <h2><span class="foodicon">🍪</span>Merienda</h2>
-                        <div class="food-controls"><select class="foodSelect"></select><button type="button"
-                                class="btn-add" title="Añadir alimento">+</button></div>
+                        <div class="food-controls">
+                            <button type="button" class="btn-add btn-toggle-foods"
+                                title="Seleccionar alimentos">+</button>
+                            <div class="food-picker">
+                                <div class="foodGrid food-grid"></div>
+                                <button type="button" class="btn-food-check" title="Añadir alimentos seleccionados">✓
+                                    Añadir seleccionados</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="status foodsStatus">Cargando alimentos...</div>
                     <table style="margin-top:10px">
@@ -1318,24 +1865,59 @@
                             </tr>
                         </thead>
                         <tbody class="mealBody"></tbody>
-                        <tbody class="totals">
-                            <tr>
-                                <td>Totales</td>
-                                <td class="right totalKcal">0</td>
-                                <td class="right totalFat">0</td>
-                                <td class="right totalCarb">0</td>
-                                <td class="right totalProt">0</td>
-                                <td class="right totalGr">0</td>
-                            </tr>
-                        </tbody>
                     </table>
+                    <div class="meal-rings" aria-label="Totales en anillos">
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#66bb6a">
+                                <div>
+                                    <div class="meal-mini-ring-value totalKcal">0</div>
+                                    <div class="meal-mini-ring-unit">kcal</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Cal</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#ffc98a">
+                                <div>
+                                    <div class="meal-mini-ring-value totalFat">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Grasas</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#8bd9a6">
+                                <div>
+                                    <div class="meal-mini-ring-value totalCarb">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Carbs</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#ff8f87">
+                                <div>
+                                    <div class="meal-mini-ring-value totalProt">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Proteína</div>
+                        </div>
+                    </div>
                 </section>
 
                 <section class="card" data-meal="cena">
                     <div class="actions">
                         <h2><span class="foodicon">🌙</span>Cena</h2>
-                        <div class="food-controls"><select class="foodSelect"></select><button type="button"
-                                class="btn-add" title="Añadir alimento">+</button></div>
+                        <div class="food-controls">
+                            <button type="button" class="btn-add btn-toggle-foods"
+                                title="Seleccionar alimentos">+</button>
+                            <div class="food-picker">
+                                <div class="foodGrid food-grid"></div>
+                                <button type="button" class="btn-food-check" title="Añadir alimentos seleccionados">✓
+                                    Añadir seleccionados</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="status foodsStatus">Cargando alimentos...</div>
                     <table style="margin-top:10px">
@@ -1350,17 +1932,45 @@
                             </tr>
                         </thead>
                         <tbody class="mealBody"></tbody>
-                        <tbody class="totals">
-                            <tr>
-                                <td>Totales</td>
-                                <td class="right totalKcal">0</td>
-                                <td class="right totalFat">0</td>
-                                <td class="right totalCarb">0</td>
-                                <td class="right totalProt">0</td>
-                                <td class="right totalGr">0</td>
-                            </tr>
-                        </tbody>
                     </table>
+                    <div class="meal-rings" aria-label="Totales en anillos">
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#66bb6a">
+                                <div>
+                                    <div class="meal-mini-ring-value totalKcal">0</div>
+                                    <div class="meal-mini-ring-unit">kcal</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Cal</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#ffc98a">
+                                <div>
+                                    <div class="meal-mini-ring-value totalFat">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Grasas</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#8bd9a6">
+                                <div>
+                                    <div class="meal-mini-ring-value totalCarb">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Carbs</div>
+                        </div>
+                        <div class="meal-mini-ring">
+                            <div class="meal-mini-ring-track" style="--ring-color:#ff8f87">
+                                <div>
+                                    <div class="meal-mini-ring-value totalProt">0</div>
+                                    <div class="meal-mini-ring-unit">g</div>
+                                </div>
+                            </div>
+                            <div class="meal-mini-ring-label">Proteína</div>
+                        </div>
+                    </div>
                 </section>
             </div>
 
@@ -1417,7 +2027,6 @@
                     <div class="kv"><input id="deficitReal" type="number" value="0" step="1" readonly /><label
                             for="deficitReal">Déficit real (auto)</label></div>
                 </div>
-                <input id="sexo" type="hidden" value="female" />
                 <div class="grid3" style="margin-top:8px;">
                     <div class="kv"><input id="idealProt" type="number" value="130" step="1" /><label
                             for="idealProt">Ideal Proteínas (g)</label></div>
@@ -1425,6 +2034,9 @@
                             for="idealCarb">Ideal Carbohidratos (g)</label></div>
                     <div class="kv"><input id="idealFat" type="number" value="50" step="1" /><label for="idealFat">Ideal
                             Grasas (g)</label></div>
+                </div>
+                <div class="settings-actions">
+                    <button type="button" class="btn-save-config" id="btnSaveConfig">Guardar configuración</button>
                 </div>
                 <p class="muted small" style="margin:16px 0 0">*BMR = (10×peso) + (6,25×altura) - (5×edad) - 161. TDEE =
                     BMR × 1,65. Déficit = TDEE - kcal consumidas.</p>
@@ -1438,7 +2050,19 @@
                     <div class="db-header">
                         <div class="db-search"><input type="text" id="searchFood" placeholder="Buscar alimento...">
                         </div>
-                        <button type="button" class="btn-add" id="btnAddFood" title="Añadir nuevo alimento">+</button>
+                        <div class="db-header-actions">
+                            <button type="button" class="btn-add" id="btnAddFood"
+                                title="Añadir nuevo alimento">+</button>
+                            <button type="button" class="btn-add btn-db-menu" id="btnDbActions"
+                                title="Acciones sobre los alimentos seleccionados">⋮</button>
+                            <div class="db-actions-menu" id="dbActionsMenu"
+                                aria-label="Acciones de alimentos seleccionados">
+                                <button type="button" class="menu-edit" id="btnEditSelectedFoods">Editar
+                                    seleccionados</button>
+                                <button type="button" class="menu-delete" id="btnDeleteSelectedFoods">Eliminar
+                                    seleccionados</button>
+                            </div>
+                        </div>
                     </div>
 
                     <section class="card" id="foodFormSection" style="display:none; margin: 0 0 20px 0;">
@@ -1454,6 +2078,21 @@
                                     type="number" id="formFoodCarb" placeholder="0" step="0.1" required></div>
                             <div class="form-group"><label for="formFoodProt">Proteínas (g) *</label><input
                                     type="number" id="formFoodProt" placeholder="0" step="0.1" required></div>
+                            <div class="form-group"><label for="formFoodCategory">Categoría *</label><select
+                                    id="formFoodCategory">
+                                    <option value="Proteínas">Proteínas</option>
+                                    <option value="Carbohidratos">Carbohidratos</option>
+                                    <option value="Fibra">Fibra</option>
+                                    <option value="Verdura">Verdura</option>
+                                    <option value="Fruta">Fruta</option>
+                                    <option value="Lácteos">Lácteos</option>
+                                    <option value="Grasas">Grasas</option>
+                                    <option value="Otros">Otros</option>
+                                </select></div>
+                            <div class="form-group"><label for="formFoodMin">Min por comida (g) *</label><input
+                                    type="number" id="formFoodMin" placeholder="0" step="1" min="0" required></div>
+                            <div class="form-group"><label for="formFoodMax">Max por comida (g) *</label><input
+                                    type="number" id="formFoodMax" placeholder="0" step="1" min="0" required></div>
                         </div>
                         <div class="form-actions">
                             <button type="button" class="btn-primary" id="btnSaveFood">Guardar alimento</button>
@@ -1486,15 +2125,25 @@
         let FOODS = [];
         let editingFoodId = null;
         const HISTORY_STORAGE_KEY = 'foodTrackerData';
-        const HISTORY_API_URL = (location.protocol === 'file:' ? 'http://localhost:3000/api/history' : '/api/history');
+        const HISTORY_API_URL = (location.protocol === 'file:' ? 'http://localhost:3001/api/history' : '/api/history');
+        const HISTORY_API_FALLBACK_URL = 'http://localhost:3001/api/history';
         let lastHistorySyncError = '';
 
         function round1(n) { return Math.round((n + Number.EPSILON) * 10) / 10; }
         function round0(n) { return Math.round(n); }
         function slugId(name) { return name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-áéíóúüñ]/gi, "").slice(0, 60) || ("food-" + Math.random().toString(16).slice(2)); }
+        function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
 
         const MEALS = ["desayuno", "comida", "merienda", "cena"];
         const mealState = {}; MEALS.forEach(m => mealState[m] = []);
+        const pendingFoodSelections = {}; MEALS.forEach(m => pendingFoodSelections[m] = new Set());
+        const MEAL_PLANS_STORAGE_KEY = 'mealPlansByDate';
+        let activePlanDate = '';
+        const dbSelectedFoodIds = new Set();
+        const dbEditingFoodIds = new Set();
+        let dbActionsMenuOpen = false;
+        const DEFAULT_FOOD_MIN_GR = 50;
+        const DEFAULT_FOOD_MAX_GR = 150;
 
         const DEFAULT_FOODS = [
             { name: "Protein 80 Plus", kcal: 365, fat: 2, carb: 7, prot: 80 },
@@ -1524,6 +2173,220 @@
             { name: "Arándanos", kcal: 57, fat: 0, carb: 0, prot: 0.7 }
         ];
 
+        const FOOD_CATEGORY_ORDER = ["Proteínas", "Carbohidratos", "Fibra", "Verdura", "Fruta", "Lácteos", "Grasas", "Otros"];
+
+        function inferFoodCategory(food) {
+            const name = normalizeFoodName(food?.name || '');
+            const per = food?.per || { kcal: 0, fat: 0, carb: 0, prot: 0 };
+
+            if (/(platano|banana|arandano|fresa|manzana|pera|naranja|mandarina|kiwi|melon|sandia|uva|mango|papaya|datil|fruta)/.test(name)) {
+                return "Fruta";
+            }
+            if (/(brocoli|espinaca|lechuga|tomate|pepino|calabacin|berenjena|zanahoria|pimiento|cebolla|verdura|vegetal)/.test(name)) {
+                return "Verdura";
+            }
+            if (/(yogur|yogurt|skyr|queso|leche|kefir|lacteo|lacteo)/.test(name)) {
+                return "Lácteos";
+            }
+            if (/(aceite|aguacate|nuez|nueces|almendra|almendras|cacahuete|mani|mantequilla de cacahuete|semilla|chia|chía|lino)/.test(name)) {
+                return "Grasas";
+            }
+            if (/(avena|salvado|integral|fibra|chia|chía|lino|semilla de lino|legumbre|garbanzo|lenteja)/.test(name)) {
+                return "Fibra";
+            }
+            if (/(pollo|pavo|ternera|atun|atun|salmon|salmón|huevo|gamba|gambas|prote|whey|colageno|colágeno|proteina|proteína)/.test(name)) {
+                return "Proteínas";
+            }
+            if (/(arroz|pasta|patata|pan|cereal|miel|carbo|carb)/.test(name)) {
+                return "Carbohidratos";
+            }
+
+            const prot = Number(per.prot || 0);
+            const carb = Number(per.carb || 0);
+            const fat = Number(per.fat || 0);
+
+            if (prot >= carb && prot >= fat && prot >= 10) return "Proteínas";
+            if (carb >= prot && carb >= fat && carb >= 12) return "Carbohidratos";
+            if (fat >= prot && fat >= carb && fat >= 10) return "Grasas";
+
+            return "Otros";
+        }
+
+        function getFoodCategory(food) {
+            const raw = String(food?.category || '').trim();
+            const canonical = FOOD_CATEGORY_ORDER.find(cat => normalizeFoodName(cat) === normalizeFoodName(raw));
+            return canonical || inferFoodCategory(food);
+        }
+
+        function getCategoryCssClass(category) {
+            const map = {
+                "Proteínas": "food-cat-proteinas",
+                "Carbohidratos": "food-cat-carbohidratos",
+                "Fibra": "food-cat-fibra",
+                "Verdura": "food-cat-verdura",
+                "Fruta": "food-cat-fruta",
+                "Lácteos": "food-cat-lacteos",
+                "Grasas": "food-cat-grasas",
+                "Otros": "food-cat-otros"
+            };
+            return map[category] || "food-cat-otros";
+        }
+
+        function normalizeFoodMinMax(food) {
+            const minRaw = Number(food?.minGr);
+            const maxRaw = Number(food?.maxGr);
+            const minGr = Number.isFinite(minRaw) && minRaw >= 0 ? round0(minRaw) : DEFAULT_FOOD_MIN_GR;
+            let maxGr = Number.isFinite(maxRaw) && maxRaw >= 0 ? round0(maxRaw) : DEFAULT_FOOD_MAX_GR;
+            if (maxGr < minGr) maxGr = minGr;
+            return { minGr, maxGr };
+        }
+
+        function escapeHtml(text) {
+            return String(text ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function setDbActionsMenu(open) {
+            dbActionsMenuOpen = open;
+            const menu = document.getElementById('dbActionsMenu');
+            if (menu) menu.classList.toggle('open', open);
+        }
+
+        function refreshDbActionMenuState() {
+            const editBtn = document.getElementById('btnEditSelectedFoods');
+            const deleteBtn = document.getElementById('btnDeleteSelectedFoods');
+            const hasSelection = dbSelectedFoodIds.size > 0;
+            if (editBtn) editBtn.disabled = !hasSelection;
+            if (deleteBtn) deleteBtn.disabled = !hasSelection;
+        }
+
+        function enableSelectedFoodEditing() {
+            dbSelectedFoodIds.forEach(id => dbEditingFoodIds.add(id));
+            renderFoodList(document.getElementById('searchFood')?.value || '');
+            setTimeout(() => {
+                const firstId = [...dbSelectedFoodIds][0];
+                const firstInput = firstId ? document.querySelector(`[data-food-id="${firstId}"][data-field="name"]`) : null;
+                if (firstInput) firstInput.focus();
+            }, 0);
+        }
+
+        function deleteSelectedFoods() {
+            const ids = [...dbSelectedFoodIds];
+            if (!ids.length) return;
+            if (!confirm(`¿Eliminar ${ids.length} alimento(s)?`)) return;
+
+            FOODS = FOODS.filter(food => !dbSelectedFoodIds.has(food.id));
+            MEALS.forEach(meal => {
+                mealState[meal] = mealState[meal].filter(row => !dbSelectedFoodIds.has(row.foodId));
+            });
+            dbSelectedFoodIds.clear();
+            ids.forEach(id => dbEditingFoodIds.delete(id));
+            saveFoodsToStorage();
+            renderFoodList(document.getElementById('searchFood')?.value || '');
+            renderFoodsInMeals();
+            recalcBMRObjective();
+            refreshDbActionMenuState();
+            setDbActionsMenu(false);
+        }
+
+        function saveInlineFoodField(foodId, field, value) {
+            const food = FOODS.find(f => f.id === foodId);
+            if (!food) return;
+
+            if (field === 'name') {
+                const nextName = String(value || '').trim();
+                if (nextName) food.name = nextName;
+            } else if (field === 'category') {
+                food.category = String(value || 'Otros');
+            } else if (field === 'kcal') {
+                food.per.kcal = Math.max(0, Number(value || 0));
+            } else if (field === 'fat') {
+                food.per.fat = Math.max(0, Number(value || 0));
+            } else if (field === 'carb') {
+                food.per.carb = Math.max(0, Number(value || 0));
+            } else if (field === 'prot') {
+                food.per.prot = Math.max(0, Number(value || 0));
+            } else if (field === 'minGr') {
+                food.minGr = Math.max(0, round0(Number(value || 0)));
+                if (Number.isFinite(food.maxGr) && food.maxGr < food.minGr) food.maxGr = food.minGr;
+            } else if (field === 'maxGr') {
+                food.maxGr = Math.max(Math.max(0, round0(Number(value || 0))), Number(food.minGr || 0));
+            }
+
+            FOODS.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+            saveFoodsToStorage();
+            renderFoodList(document.getElementById('searchFood')?.value || '');
+            renderFoodsInMeals();
+            recalcBMRObjective();
+        }
+
+        function updateQuantityInputState(input, grams, limits) {
+            const outOfRange = grams > 0 && (grams < limits.minGr || grams > limits.maxGr);
+            input.style.borderColor = outOfRange ? 'rgba(198, 72, 72, .82)' : '';
+            input.style.boxShadow = outOfRange ? '0 0 0 3px rgba(198, 72, 72, .10)' : '';
+            input.title = outOfRange
+                ? `Fuera del rango recomendado ${limits.minGr}-${limits.maxGr} g`
+                : `Editable. Rango recomendado: ${limits.minGr}-${limits.maxGr} g`;
+        }
+
+        function evaluateMealTotals(items, grams) {
+            let totalKcal = 0, totalProt = 0, totalCarb = 0, totalFat = 0;
+            items.forEach((item, i) => {
+                const g = Number(grams[i] || 0);
+                totalKcal += (item.food.per.kcal * g) / 100;
+                totalProt += (item.food.per.prot * g) / 100;
+                totalCarb += (item.food.per.carb * g) / 100;
+                totalFat += (item.food.per.fat * g) / 100;
+            });
+            return { totalKcal, totalProt, totalCarb, totalFat };
+        }
+
+        function reduceCaloriesToTarget(items, grams, targetKcal) {
+            const adjusted = grams.slice();
+            let totals = evaluateMealTotals(items, adjusted);
+            if (totals.totalKcal <= targetKcal) return adjusted;
+
+            // Reduce first foods with highest kcal per gram while respecting min per food.
+            const order = items
+                .map((item, i) => ({ i, kcalPerGram: Number(item.food.per.kcal || 0) / 100 }))
+                .sort((a, b) => b.kcalPerGram - a.kcalPerGram);
+
+            order.forEach(({ i, kcalPerGram }) => {
+                if (totals.totalKcal <= targetKcal || kcalPerGram <= 0) return;
+                const limits = normalizeFoodMinMax(items[i].food);
+                const canReduce = Math.max(0, adjusted[i] - limits.minGr);
+                if (!canReduce) return;
+
+                const kcalToRemove = totals.totalKcal - targetKcal;
+                const gramsNeeded = Math.ceil(kcalToRemove / kcalPerGram);
+                const delta = Math.min(canReduce, gramsNeeded);
+                adjusted[i] -= delta;
+                totals = evaluateMealTotals(items, adjusted);
+            });
+
+            return adjusted;
+        }
+
+        function scoreRationCandidate(items, grams, targetKcal, targets) {
+            const totals = evaluateMealTotals(items, grams);
+            const macroTolerance = 20;
+
+            const overProt = Math.max(0, Math.abs(totals.totalProt - targets.prot) - macroTolerance);
+            const overCarb = Math.max(0, Math.abs(totals.totalCarb - targets.carb) - macroTolerance);
+            const overFat = Math.max(0, Math.abs(totals.totalFat - targets.fat) - macroTolerance);
+
+            const kcalAboveTarget = Math.max(0, totals.totalKcal - targetKcal);
+            const kcalBelowTarget = Math.max(0, targetKcal - totals.totalKcal);
+
+            // Penalize strongly if kcal exceed target (deficit < 500), prefer slight extra deficit.
+            const macroPenalty = (overProt * overProt) + (overCarb * overCarb) + (overFat * overFat);
+            return (kcalAboveTarget * 1000) + (kcalBelowTarget * 0.15) + macroPenalty;
+        }
+
         function mifflinBMR({ weightKg, heightCm, age }) {
             return (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
         }
@@ -1541,6 +2404,91 @@
                 .trim();
         }
 
+        function getTodayIsoDate() {
+            const now = new Date();
+            const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+            return local.toISOString().slice(0, 10);
+        }
+
+        function formatPlanDateLabel(isoDate) {
+            if (!isoDate) return 'Hoy';
+            const parts = isoDate.split('-').map(Number);
+            const dt = new Date(parts[0], parts[1] - 1, parts[2]);
+            return dt.toLocaleDateString('es-ES', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+        }
+
+        function readMealPlansStorage() {
+            const raw = localStorage.getItem(MEAL_PLANS_STORAGE_KEY);
+            if (!raw) return {};
+            try {
+                const parsed = JSON.parse(raw);
+                return parsed && typeof parsed === 'object' ? parsed : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function saveMealPlansStorage(plans) {
+            localStorage.setItem(MEAL_PLANS_STORAGE_KEY, JSON.stringify(plans));
+        }
+
+        function persistCurrentMealPlan() {
+            if (!activePlanDate) return;
+            const plans = readMealPlansStorage();
+            plans[activePlanDate] = JSON.parse(JSON.stringify(mealState));
+            saveMealPlansStorage(plans);
+        }
+
+        function loadMealPlanForDate(isoDate) {
+            const plans = readMealPlansStorage();
+            const plan = plans[isoDate] || {};
+            MEALS.forEach(meal => {
+                const rows = Array.isArray(plan[meal]) ? plan[meal] : [];
+                mealState[meal] = rows.map(row => ({
+                    foodId: row.foodId,
+                    grams: Math.max(0, Number(row.grams || 0))
+                })).filter(row => row.foodId);
+                pendingFoodSelections[meal].clear();
+            });
+        }
+
+        function syncActiveDateUI() {
+            const dateInput = document.getElementById('activeDateInput');
+            const dateLabel = document.getElementById('activeDateLabel');
+            if (dateInput) dateInput.value = activePlanDate;
+            if (dateLabel) dateLabel.textContent = formatPlanDateLabel(activePlanDate);
+        }
+
+        function initializeDayPlanner() {
+            const dateInput = document.getElementById('activeDateInput');
+            activePlanDate = getTodayIsoDate();
+            syncActiveDateUI();
+            loadMealPlanForDate(activePlanDate);
+            renderFoodsInMeals();
+            recalcBMRObjective();
+
+            if (!dateInput) return;
+            dateInput.addEventListener('change', () => {
+                const nextDate = String(dateInput.value || '').trim();
+                if (!nextDate || nextDate === activePlanDate) return;
+                persistCurrentMealPlan();
+                activePlanDate = nextDate;
+                syncActiveDateUI();
+                loadMealPlanForDate(activePlanDate);
+                renderFoodsInMeals();
+                recalcBMRObjective();
+            });
+        }
+
+        function updateMealRingProgress(sec, selector, value, target) {
+            const valueEl = sec.querySelector(selector);
+            if (!valueEl) return;
+            const ring = valueEl.closest('.meal-mini-ring-track');
+            if (!ring) return;
+            const ratio = target > 0 ? Math.max(0, Math.min(value / target, 1)) : 0;
+            ring.style.setProperty('--ring-pct', String(Math.round(ratio * 100)));
+        }
+
         function syncFoodsWithDefaults() {
             const defaultsMap = new Map(DEFAULT_FOODS.map(f => [normalizeFoodName(f.name), f]));
             const seen = new Set();
@@ -1548,12 +2496,15 @@
             FOODS = FOODS.map(food => {
                 const key = normalizeFoodName(food.name);
                 const def = defaultsMap.get(key);
+                const limits = normalizeFoodMinMax(food);
                 if (!def) return food;
                 seen.add(key);
                 return {
                     ...food,
                     name: def.name,
-                    per: { kcal: def.kcal, fat: def.fat, carb: def.carb, prot: def.prot }
+                    per: { kcal: def.kcal, fat: def.fat, carb: def.carb, prot: def.prot },
+                    minGr: limits.minGr,
+                    maxGr: limits.maxGr
                 };
             });
 
@@ -1563,7 +2514,9 @@
                 FOODS.push({
                     id: slugId(def.name),
                     name: def.name,
-                    per: { kcal: def.kcal, fat: def.fat, carb: def.carb, prot: def.prot }
+                    per: { kcal: def.kcal, fat: def.fat, carb: def.carb, prot: def.prot },
+                    minGr: DEFAULT_FOOD_MIN_GR,
+                    maxGr: DEFAULT_FOOD_MAX_GR
                 });
             });
 
@@ -1581,6 +2534,15 @@
             } else {
                 initializeDefaultFoods();
             }
+            FOODS = FOODS.map(food => ({
+                ...food,
+                minGr: DEFAULT_FOOD_MIN_GR,
+                maxGr: DEFAULT_FOOD_MAX_GR
+            }));
+            FOODS = FOODS.map(food => {
+                const limits = normalizeFoodMinMax(food);
+                return { ...food, minGr: limits.minGr, maxGr: limits.maxGr };
+            });
             syncFoodsWithDefaults();
             FOODS.sort((a, b) => a.name.localeCompare(b.name, 'es'));
             renderFoodsInMeals();
@@ -1591,7 +2553,9 @@
             FOODS = DEFAULT_FOODS.map(f => ({
                 id: slugId(f.name),
                 name: f.name,
-                per: { kcal: f.kcal, fat: f.fat, carb: f.carb, prot: f.prot }
+                per: { kcal: f.kcal, fat: f.fat, carb: f.carb, prot: f.prot },
+                minGr: DEFAULT_FOOD_MIN_GR,
+                maxGr: DEFAULT_FOOD_MAX_GR
             }));
             FOODS.sort((a, b) => a.name.localeCompare(b.name, 'es'));
             saveFoodsToStorage();
@@ -1645,9 +2609,17 @@
                 return `No hay conexión con el servidor (${HISTORY_API_URL}). Inicia el servidor con: python3 server.py`;
             }
             if (raw.includes('(405)')) {
-                return `El servidor actual no permite guardar historial (405). Abre esta web con: python3 server.py y entra a http://localhost:3000`;
+                return `El servidor actual no permite guardar historial (405). Inicia backend con: python3 server.py (usa puerto 3001).`;
             }
             return raw;
+        }
+
+        function getHistoryApiCandidates() {
+            const urls = [HISTORY_API_URL];
+            if (!urls.includes(HISTORY_API_FALLBACK_URL)) {
+                urls.push(HISTORY_API_FALLBACK_URL);
+            }
+            return urls;
         }
 
         async function syncHistoryAcrossDevices() {
@@ -1680,49 +2652,59 @@
                 history: loadHistoryFromStorage(),
                 updatedAt: new Date().toISOString()
             };
-            try {
-                let res = await fetch(HISTORY_API_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (res.status === 405) {
-                    // Fallback for servers that only allow POST.
-                    res = await fetch(HISTORY_API_URL, {
-                        method: 'POST',
+            const candidates = getHistoryApiCandidates();
+            let lastErr = null;
+            for (const endpoint of candidates) {
+                try {
+                    let res = await fetch(endpoint, {
+                        method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
+                    if (res.status === 405) {
+                        // Fallback for servers that only allow POST.
+                        res = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                    }
+                    if (!res.ok) throw new Error(`No se pudo subir (${res.status}) en ${endpoint}`);
+                    if (!silent) alert('✓ Historial subido.');
+                    lastHistorySyncError = '';
+                    return true;
+                } catch (e) {
+                    lastErr = e;
                 }
-                if (!res.ok) throw new Error(`No se pudo subir (${res.status})`);
-                if (!silent) alert('✓ Historial subido.');
-                lastHistorySyncError = '';
-                return true;
-            } catch (e) {
-                lastHistorySyncError = formatHistorySyncError(e);
-                if (!silent) alert(`No se pudo subir el historial. Detalle: ${e?.message || 'sin conexión al servidor'}`);
-                return false;
             }
+            lastHistorySyncError = formatHistorySyncError(lastErr);
+            if (!silent) alert(`No se pudo subir el historial. Detalle: ${lastHistorySyncError}`);
+            return false;
         }
 
         async function pullHistoryFromCloud(silent = false) {
-            try {
-                const res = await fetch(HISTORY_API_URL, { cache: 'no-store' });
-                if (!res.ok) throw new Error(`No se pudo descargar (${res.status})`);
-                const payload = await res.json();
-                const cloudHistory = Array.isArray(payload) ? payload : (Array.isArray(payload?.history) ? payload.history : []);
-                if (!Array.isArray(cloudHistory)) throw new Error('Formato inválido');
-                saveHistoryToStorage(cloudHistory);
-                renderHistoryList();
-                renderHistoryChart();
-                if (!silent) alert('✓ Historial descargado.');
-                lastHistorySyncError = '';
-                return true;
-            } catch (e) {
-                lastHistorySyncError = formatHistorySyncError(e);
-                if (!silent) alert(`No se pudo descargar el historial. Detalle: ${e?.message || 'sin conexión al servidor'}`);
-                return false;
+            const candidates = getHistoryApiCandidates();
+            let lastErr = null;
+            for (const endpoint of candidates) {
+                try {
+                    const res = await fetch(endpoint, { cache: 'no-store' });
+                    if (!res.ok) throw new Error(`No se pudo descargar (${res.status}) en ${endpoint}`);
+                    const payload = await res.json();
+                    const cloudHistory = Array.isArray(payload) ? payload : (Array.isArray(payload?.history) ? payload.history : []);
+                    if (!Array.isArray(cloudHistory)) throw new Error('Formato inválido');
+                    saveHistoryToStorage(cloudHistory);
+                    renderHistoryList();
+                    renderHistoryChart();
+                    if (!silent) alert('✓ Historial descargado.');
+                    lastHistorySyncError = '';
+                    return true;
+                } catch (e) {
+                    lastErr = e;
+                }
             }
+            lastHistorySyncError = formatHistorySyncError(lastErr);
+            if (!silent) alert(`No se pudo descargar el historial. Detalle: ${lastHistorySyncError}`);
+            return false;
         }
 
 
@@ -1785,16 +2767,63 @@
             const mealSections = document.querySelectorAll(".card[data-meal]");
             mealSections.forEach(sec => {
                 const meal = sec.getAttribute("data-meal");
-                const foodSel = sec.querySelector(".foodSelect");
+                const foodGrid = sec.querySelector(".foodGrid");
                 const mealBody = sec.querySelector(".mealBody");
                 const status = sec.querySelector(".foodsStatus");
 
-                foodSel.innerHTML = "<option value=''>Selecciona un alimento...</option>";
+                const selectedValues = pendingFoodSelections[meal] || new Set();
+                foodGrid.innerHTML = "";
+
+                const groupedFoods = new Map();
+                FOOD_CATEGORY_ORDER.forEach(cat => groupedFoods.set(cat, []));
+
                 FOODS.forEach(f => {
-                    const opt = document.createElement("option");
-                    opt.value = f.id;
-                    opt.textContent = f.name;
-                    foodSel.appendChild(opt);
+                    const category = getFoodCategory(f);
+                    if (!groupedFoods.has(category)) groupedFoods.set(category, []);
+                    groupedFoods.get(category).push(f);
+                });
+
+                groupedFoods.forEach((foods, category) => {
+                    if (!foods.length) return;
+
+                    const group = document.createElement("section");
+                    group.className = `food-category ${getCategoryCssClass(category)}`;
+
+                    const title = document.createElement("h4");
+                    title.className = "food-category-title";
+                    title.textContent = category;
+
+                    const content = document.createElement("div");
+                    content.className = "food-category-items";
+
+                    foods.forEach(f => {
+                        const label = document.createElement("label");
+                        label.className = "food-item-check";
+
+                        const check = document.createElement("input");
+                        check.type = "checkbox";
+                        check.value = f.id;
+                        check.checked = selectedValues.has(f.id);
+
+                        check.addEventListener('change', () => {
+                            if (check.checked) {
+                                pendingFoodSelections[meal].add(f.id);
+                            } else {
+                                pendingFoodSelections[meal].delete(f.id);
+                            }
+                        });
+
+                        const text = document.createElement("span");
+                        text.textContent = f.name;
+
+                        label.appendChild(check);
+                        label.appendChild(text);
+                        content.appendChild(label);
+                    });
+
+                    group.appendChild(title);
+                    group.appendChild(content);
+                    foodGrid.appendChild(group);
                 });
 
                 mealBody.innerHTML = "";
@@ -1802,9 +2831,12 @@
                     const food = FOODS.find(f => f.id === row.foodId);
                     if (!food) return;
 
-                    const displayMacros = row.grams === 0 ?
+                    const limits = normalizeFoodMinMax(food);
+                    const grams = Math.max(0, Number(row.grams || 0));
+
+                    const displayMacros = grams === 0 ?
                         food.per :
-                        computeRowMacros(food, row.grams);
+                        computeRowMacros(food, grams);
 
                     const tr = document.createElement("tr");
                     tr.innerHTML = `<td>${food.name}</td><td class="right">${round0(displayMacros.kcal)}</td><td class="right">${round1(displayMacros.fat)}</td><td class="right">${round1(displayMacros.carb)}</td><td class="right">${round1(displayMacros.prot)}</td><td class="right"></td>`;
@@ -1812,18 +2844,24 @@
 
                     const input = document.createElement("input");
                     input.type = "number";
-                    input.min = "0";
+                    input.min = String(limits.minGr);
+                    input.max = String(limits.maxGr);
                     input.step = "1";
                     input.value = row.grams || '';
+                    updateQuantityInputState(input, Math.max(0, Number(input.value || 0)), limits);
 
-                    input.addEventListener("change", () => {
-                        mealState[meal][idx].grams = Number(input.value || 0);
-                        renderFoodsInMeals();
+                    input.addEventListener("input", () => {
+                        const next = Math.max(0, Number(input.value || 0));
+                        mealState[meal][idx].grams = next;
+                        updateQuantityInputState(input, next, limits);
                         recalcBMRObjective();
                     });
 
-                    input.addEventListener("input", () => {
-                        mealState[meal][idx].grams = Number(input.value || 0);
+                    input.addEventListener("change", () => {
+                        const next = Math.max(0, Number(input.value || 0));
+                        mealState[meal][idx].grams = next;
+                        updateQuantityInputState(input, next, limits);
+                        renderFoodsInMeals();
                         recalcBMRObjective();
                     });
 
@@ -1855,13 +2893,29 @@
                     tot.prot += m.prot;
                     tot.gr += row.grams;
                 });
-                sec.querySelector(".totalKcal").textContent = round0(tot.kcal);
-                sec.querySelector(".totalFat").textContent = round1(tot.fat);
-                sec.querySelector(".totalCarb").textContent = round1(tot.carb);
-                sec.querySelector(".totalProt").textContent = round1(tot.prot);
-                sec.querySelector(".totalGr").textContent = round0(tot.gr);
+
+                const kcalTargetMeal = Math.max(1, Number(document.getElementById('objKcalLabel')?.textContent || 0) / 4);
+                const protTargetMeal = Math.max(1, Number(document.getElementById('idealProt')?.value || 0) / 4);
+                const carbTargetMeal = Math.max(1, Number(document.getElementById('idealCarb')?.value || 0) / 4);
+                const fatTargetMeal = Math.max(1, Number(document.getElementById('idealFat')?.value || 0) / 4);
+
+                const kcalEl = sec.querySelector('.totalKcal');
+                const fatEl = sec.querySelector('.totalFat');
+                const carbEl = sec.querySelector('.totalCarb');
+                const protEl = sec.querySelector('.totalProt');
+                if (kcalEl) kcalEl.textContent = String(round0(tot.kcal));
+                if (fatEl) fatEl.textContent = String(round1(tot.fat));
+                if (carbEl) carbEl.textContent = String(round1(tot.carb));
+                if (protEl) protEl.textContent = String(round1(tot.prot));
+
+                updateMealRingProgress(sec, '.totalKcal', tot.kcal, kcalTargetMeal);
+                updateMealRingProgress(sec, '.totalFat', tot.fat, fatTargetMeal);
+                updateMealRingProgress(sec, '.totalCarb', tot.carb, carbTargetMeal);
+                updateMealRingProgress(sec, '.totalProt', tot.prot, protTargetMeal);
                 status.textContent = `Alimentos cargados: ${FOODS.length}`;
             });
+
+            persistCurrentMealPlan();
         }
 
         function renderFoodList(filter = '') {
@@ -1873,17 +2927,76 @@
                 return;
             }
 
-            foodList.innerHTML = '';
+            const grouped = new Map();
+            FOOD_CATEGORY_ORDER.forEach(cat => grouped.set(cat, []));
             filtered.forEach(food => {
-                const item = document.createElement('div');
-                item.className = 'food-item';
-                item.innerHTML = `<div class="food-item-info"><div class="food-item-name">${food.name}</div><div class="food-item-macros">${round0(food.per.kcal)} kcal • ${round1(food.per.fat)}g grasas • ${round1(food.per.carb)}g carbs • ${round1(food.per.prot)}g prot</div></div><div class="food-item-actions"><button type="button" class="btn-edit">Editar</button><button type="button" class="btn-delete">Eliminar</button></div>`;
-
-                item.querySelector('.btn-edit').addEventListener('click', () => editFood(food.id));
-                item.querySelector('.btn-delete').addEventListener('click', () => deleteFood(food.id));
-
-                foodList.appendChild(item);
+                const category = getFoodCategory(food);
+                if (!grouped.has(category)) grouped.set(category, []);
+                grouped.get(category).push(food);
             });
+
+            let content = '';
+            grouped.forEach((foods, category) => {
+                if (!foods.length) return;
+
+                const rows = foods.map(food => {
+                    const limits = normalizeFoodMinMax(food);
+                    const category = getFoodCategory(food);
+                    const isSelected = dbSelectedFoodIds.has(food.id);
+                    const isEditing = dbEditingFoodIds.has(food.id);
+                    return `<tr class="${isSelected ? 'food-db-row-selected' : ''} ${isEditing ? 'food-db-row-editing' : ''}">
+                            <td class="food-db-checkbox-cell"><input type="checkbox" class="food-db-row-checkbox" data-select-id="${food.id}"${isSelected ? ' checked' : ''} /></td>
+                            <td><input class="food-db-inline-input" type="text" value="${escapeHtml(food.name)}" data-field="name" data-food-id="${food.id}" ${isEditing ? '' : 'disabled'} /></td>
+                            <td><select class="food-category-select" data-field="category" data-food-id="${food.id}" ${isEditing ? '' : 'disabled'}>${FOOD_CATEGORY_ORDER.map(cat => `<option value="${cat}"${cat === category ? ' selected' : ''}>${cat}</option>`).join('')}</select></td>
+                            <td><input class="food-db-inline-input" type="number" step="0.1" min="0" value="${round1(food.per.kcal)}" data-field="kcal" data-food-id="${food.id}" ${isEditing ? '' : 'disabled'} /></td>
+                            <td><input class="food-db-inline-input" type="number" step="0.1" min="0" value="${round1(food.per.fat)}" data-field="fat" data-food-id="${food.id}" ${isEditing ? '' : 'disabled'} /></td>
+                            <td><input class="food-db-inline-input" type="number" step="0.1" min="0" value="${round1(food.per.carb)}" data-field="carb" data-food-id="${food.id}" ${isEditing ? '' : 'disabled'} /></td>
+                            <td><input class="food-db-inline-input" type="number" step="0.1" min="0" value="${round1(food.per.prot)}" data-field="prot" data-food-id="${food.id}" ${isEditing ? '' : 'disabled'} /></td>
+                            <td><input class="food-db-inline-input" type="number" step="1" min="0" value="${limits.minGr}" data-field="minGr" data-food-id="${food.id}" ${isEditing ? '' : 'disabled'} /></td>
+                            <td><input class="food-db-inline-input" type="number" step="1" min="0" value="${limits.maxGr}" data-field="maxGr" data-food-id="${food.id}" ${isEditing ? '' : 'disabled'} /></td>
+                        </tr>`;
+                }).join('');
+
+                content += `<section class="food-db-group ${getCategoryCssClass(category)}">
+                    <h3 class="food-db-group-title">${category}</h3>
+                    <div class="food-db-table-wrap">
+                        <table class="food-db-table" aria-label="Listado de ${category}">
+                            <thead>
+                                <tr>
+                                    <th class="food-db-checkbox-cell"></th>
+                                    <th>Alimento</th>
+                                    <th>Categoría</th>
+                                    <th>Kcal Totales</th>
+                                    <th>Grasas (g)</th>
+                                    <th>Carbs (g)</th>
+                                    <th>Proteínas (g)</th>
+                                    <th>Min</th>
+                                    <th>Max</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                </section>`;
+            });
+
+            foodList.innerHTML = content;
+
+            foodList.querySelectorAll('[data-select-id]').forEach(cb => {
+                cb.addEventListener('change', () => {
+                    const id = cb.getAttribute('data-select-id');
+                    if (cb.checked) dbSelectedFoodIds.add(id);
+                    else dbSelectedFoodIds.delete(id);
+                    refreshDbActionMenuState();
+                });
+            });
+            foodList.querySelectorAll('[data-field]').forEach(el => {
+                const handler = () => saveInlineFoodField(el.getAttribute('data-food-id'), el.getAttribute('data-field'), el.value);
+                el.addEventListener('change', handler);
+                if (el.tagName === 'INPUT') el.addEventListener('blur', handler);
+            });
+
+            refreshDbActionMenuState();
         }
 
         function editFood(foodId) {
@@ -1896,6 +3009,9 @@
             document.getElementById('formFoodFat').value = food.per.fat;
             document.getElementById('formFoodCarb').value = food.per.carb;
             document.getElementById('formFoodProt').value = food.per.prot;
+            document.getElementById('formFoodCategory').value = getFoodCategory(food);
+            document.getElementById('formFoodMin').value = normalizeFoodMinMax(food).minGr;
+            document.getElementById('formFoodMax').value = normalizeFoodMinMax(food).maxGr;
             document.getElementById('foodFormSection').style.display = 'block';
             document.getElementById('foodFormSection').scrollIntoView({ behavior: 'smooth' });
         }
@@ -1903,9 +3019,13 @@
         function deleteFood(foodId) {
             if (confirm('¿Estás seguro?')) {
                 FOODS = FOODS.filter(f => f.id !== foodId);
+                MEALS.forEach(meal => {
+                    mealState[meal] = mealState[meal].filter(row => row.foodId !== foodId);
+                });
                 saveFoodsToStorage();
                 renderFoodList();
                 renderFoodsInMeals();
+                recalcBMRObjective();
             }
         }
 
@@ -1915,6 +3035,11 @@
             const fat = Number(document.getElementById('formFoodFat').value || 0);
             const carb = Number(document.getElementById('formFoodCarb').value || 0);
             const prot = Number(document.getElementById('formFoodProt').value || 0);
+            const category = document.getElementById('formFoodCategory').value || 'Otros';
+            const minGrRaw = Number(document.getElementById('formFoodMin').value || DEFAULT_FOOD_MIN_GR);
+            const maxGrRaw = Number(document.getElementById('formFoodMax').value || DEFAULT_FOOD_MAX_GR);
+            const minGr = Math.max(0, round0(minGrRaw));
+            const maxGr = Math.max(minGr, round0(maxGrRaw));
 
             if (!name || kcal === 0) {
                 alert('Completa el nombre y calorías');
@@ -1926,13 +3051,19 @@
                 if (food) {
                     food.name = name;
                     food.per = { kcal, fat, carb, prot };
+                    food.category = category;
+                    food.minGr = minGr;
+                    food.maxGr = maxGr;
                 }
                 editingFoodId = null;
             } else {
                 FOODS.push({
                     id: slugId(name),
                     name,
-                    per: { kcal, fat, carb, prot }
+                    category,
+                    per: { kcal, fat, carb, prot },
+                    minGr,
+                    maxGr
                 });
             }
 
@@ -2051,7 +3182,7 @@
                 alert(`✓ Datos guardados: ${dateStr} ${timeStr}`);
             } else {
                 setHistorySyncNote(`Guardado local ok, pero no se pudo subir al servidor. ${lastHistorySyncError}`, true);
-                alert(`Datos guardados localmente (${dateStr} ${timeStr}), pero falló la sincronización.`);
+                alert(`Datos guardados localmente (${dateStr} ${timeStr}), pero falló la sincronización.\nDetalle: ${lastHistorySyncError || 'sin detalle de error'}`);
             }
         }
 
@@ -2263,6 +3394,142 @@
             document.getElementById('detailModal').style.display = 'block';
         }
 
+        // Non-negative least squares via projected gradient descent
+        function solveNNLS(macrosPerGram, targets) {
+            const n = macrosPerGram.length;
+            if (n === 0) return [];
+
+            const tKcal = targets.kcal || 1800;
+            const tProt = targets.prot || 130;
+            const tCarb = targets.carb || 170;
+            const tFat = targets.fat || 50;
+
+            // A[food][macro] = normalized contribution per gram
+            const A = macrosPerGram.map(m => [
+                m.kcal / tKcal,
+                m.prot / tProt,
+                m.carb / tCarb,
+                m.fat / tFat
+            ]);
+            const b = [1, 1, 1, 1]; // normalized targets
+            const nMacros = 4;
+
+            // Lipschitz constant estimate for step size
+            let maxColNorm2 = 0;
+            for (let f = 0; f < n; f++) {
+                let s = 0;
+                for (let m = 0; m < nMacros; m++) s += A[f][m] * A[f][m];
+                if (s > maxColNorm2) maxColNorm2 = s;
+            }
+            const lr = maxColNorm2 > 0 ? 1.0 / (n * maxColNorm2) : 1.0;
+
+            // Initial guess: spread calorie target evenly
+            const avgKcalPerG = macrosPerGram.reduce((s, m) => s + m.kcal, 0) / n || 1;
+            const initG = Math.max(1, tKcal / (n * avgKcalPerG));
+            let x = new Array(n).fill(initG);
+
+            for (let iter = 0; iter < 12000; iter++) {
+                const Ax = new Array(nMacros).fill(0);
+                for (let m = 0; m < nMacros; m++)
+                    for (let f = 0; f < n; f++) Ax[m] += A[f][m] * x[f];
+
+                const r = Ax.map((v, m) => v - b[m]);
+                const g = new Array(n).fill(0);
+                for (let f = 0; f < n; f++)
+                    for (let m = 0; m < nMacros; m++) g[f] += A[f][m] * r[m];
+
+                const xNew = x.map((xi, fi) => Math.max(0, xi - lr * g[fi]));
+                let maxDiff = 0;
+                for (let f = 0; f < n; f++) {
+                    const d = Math.abs(xNew[f] - x[f]);
+                    if (d > maxDiff) maxDiff = d;
+                }
+                x = xNew;
+                if (maxDiff < 0.005) break;
+            }
+
+            return x.map(v => Math.max(0, Math.round(v)));
+        }
+
+        function calculateOptimalRations() {
+            const idealProt = Number(document.getElementById("idealProt").value || 130);
+            const idealCarb = Number(document.getElementById("idealCarb").value || 170);
+            const idealFat = Number(document.getElementById("idealFat").value || 50);
+            const tdee = Number(document.getElementById("tdee").value || 0);
+            const kcalFromMacros = (idealProt * 4 + idealCarb * 4 + idealFat * 9);
+            const baseKcal = tdee || kcalFromMacros;
+            const deficitTarget = 500;
+            const targetKcal = Math.max(0, baseKcal - deficitTarget);
+
+            // Collect all food items across all meals
+            const allItems = [];
+            MEALS.forEach(meal => {
+                mealState[meal].forEach((row, idx) => {
+                    const food = FOODS.find(f => f.id === row.foodId);
+                    if (food) allItems.push({ meal, idx, food });
+                });
+            });
+
+            if (allItems.length === 0) {
+                alert('Añade alimentos primero en las comidas para calcular raciones.');
+                return;
+            }
+
+            const macrosPerGram = allItems.map(item => ({
+                kcal: item.food.per.kcal / 100,
+                prot: item.food.per.prot / 100,
+                carb: item.food.per.carb / 100,
+                fat: item.food.per.fat / 100
+            }));
+
+            const macroTargets = { prot: idealProt, carb: idealCarb, fat: idealFat };
+            let best = { grams: null, score: Number.POSITIVE_INFINITY };
+
+            for (let kcalCandidate = targetKcal; kcalCandidate >= Math.max(0, targetKcal - 500); kcalCandidate -= 25) {
+                let grams = solveNNLS(macrosPerGram, {
+                    kcal: Math.max(1, kcalCandidate),
+                    prot: idealProt,
+                    carb: idealCarb,
+                    fat: idealFat
+                });
+
+                grams = grams.map((g, i) => {
+                    const limits = normalizeFoodMinMax(allItems[i].food);
+                    return clamp(g, limits.minGr, limits.maxGr);
+                });
+
+                grams = reduceCaloriesToTarget(allItems, grams, targetKcal);
+                const score = scoreRationCandidate(allItems, grams, targetKcal, macroTargets);
+
+                if (score < best.score) {
+                    best = { grams, score };
+                }
+            }
+
+            if (!best.grams) {
+                alert('No se pudo calcular raciones con las restricciones actuales.');
+                return;
+            }
+
+            const bestTotals = evaluateMealTotals(allItems, best.grams);
+            if (bestTotals.totalKcal > targetKcal) {
+                const reduced = reduceCaloriesToTarget(allItems, best.grams, targetKcal);
+                const reducedTotals = evaluateMealTotals(allItems, reduced);
+                if (reducedTotals.totalKcal > targetKcal) {
+                    alert(`No es posible garantizar un déficit real mínimo de 500 kcal con los mínimos actuales de los alimentos. Déficit conseguido: ${round0(baseKcal - reducedTotals.totalKcal)} kcal.`);
+                    return;
+                }
+                best.grams = reduced;
+            }
+
+            allItems.forEach((item, i) => {
+                mealState[item.meal][item.idx].grams = best.grams[i];
+            });
+
+            renderFoodsInMeals();
+            recalcBMRObjective();
+        }
+
         // Event listeners
         document.querySelectorAll('.tab-button').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -2278,6 +3545,12 @@
         });
 
         document.getElementById('btnSave').addEventListener('click', saveDailyData);
+        document.getElementById('btnCalcRations').addEventListener('click', calculateOptimalRations);
+        document.getElementById('btnSaveConfig').addEventListener('click', () => {
+            recalcBMRObjective();
+            saveConfigToStorage();
+            alert('✓ Configuración corporal guardada');
+        });
 
         document.getElementById('btnAddFood').addEventListener('click', () => {
             editingFoodId = null;
@@ -2287,6 +3560,9 @@
             document.getElementById('formFoodFat').value = '';
             document.getElementById('formFoodCarb').value = '';
             document.getElementById('formFoodProt').value = '';
+            document.getElementById('formFoodCategory').value = 'Otros';
+            document.getElementById('formFoodMin').value = String(DEFAULT_FOOD_MIN_GR);
+            document.getElementById('formFoodMax').value = String(DEFAULT_FOOD_MAX_GR);
             document.getElementById('foodFormSection').style.display = 'block';
             document.getElementById('foodFormSection').scrollIntoView({ behavior: 'smooth' });
         });
@@ -2295,6 +3571,21 @@
         document.getElementById('btnCancelFood').addEventListener('click', () => {
             document.getElementById('foodFormSection').style.display = 'none';
             editingFoodId = null;
+        });
+
+        document.getElementById('btnDbActions').addEventListener('click', (e) => {
+            e.stopPropagation();
+            setDbActionsMenu(!dbActionsMenuOpen);
+            refreshDbActionMenuState();
+        });
+
+        document.getElementById('btnEditSelectedFoods').addEventListener('click', () => {
+            enableSelectedFoodEditing();
+            setDbActionsMenu(false);
+        });
+
+        document.getElementById('btnDeleteSelectedFoods').addEventListener('click', () => {
+            deleteSelectedFoods();
         });
 
         document.getElementById('searchFood').addEventListener('input', (e) => {
@@ -2312,21 +3603,58 @@
 
         document.querySelectorAll(".card[data-meal]").forEach(sec => {
             const meal = sec.getAttribute("data-meal");
-            const sel = sec.querySelector(".foodSelect");
-            sec.querySelector(".btn-add").addEventListener('click', () => {
-                if (sel && sel.value) {
-                    mealState[meal].unshift({ foodId: sel.value, grams: 0 });
-                    renderFoodsInMeals();
-                    recalcBMRObjective();
-                    sel.value = '';
-                }
+            const picker = sec.querySelector(".food-picker");
+            const toggleBtn = sec.querySelector(".btn-toggle-foods");
+            const checkBtn = sec.querySelector(".btn-food-check");
+
+            toggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.food-picker.open').forEach(panel => {
+                    if (panel !== picker) {
+                        panel.classList.remove('open');
+                        const panelCard = panel.closest('.card[data-meal]');
+                        if (panelCard) panelCard.classList.remove('picker-open');
+                    }
+                });
+                picker.classList.toggle('open');
+                sec.classList.toggle('picker-open', picker.classList.contains('open'));
             });
+
+            checkBtn.addEventListener('click', () => {
+                const selectedFoodIds = [...pendingFoodSelections[meal]];
+                if (!selectedFoodIds.length) return;
+
+                selectedFoodIds.slice().reverse().forEach(foodId => {
+                    const food = FOODS.find(f => f.id === foodId);
+                    const limits = normalizeFoodMinMax(food || {});
+                    mealState[meal].unshift({ foodId, grams: limits.minGr });
+                });
+
+                pendingFoodSelections[meal].clear();
+                renderFoodsInMeals();
+                recalcBMRObjective();
+                picker.classList.remove('open');
+                sec.classList.remove('picker-open');
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.food-controls')) {
+                document.querySelectorAll('.food-picker.open').forEach(panel => {
+                    panel.classList.remove('open');
+                    const panelCard = panel.closest('.card[data-meal]');
+                    if (panelCard) panelCard.classList.remove('picker-open');
+                });
+            }
+            if (!e.target.closest('.db-header-actions')) {
+                setDbActionsMenu(false);
+            }
         });
 
         // Inicializar
         initializeFoods();
         loadConfigFromStorage();
-        recalcBMRObjective();
+        initializeDayPlanner();
         renderHistoryList();
         renderHistoryChart();
         syncHistoryAcrossDevices();

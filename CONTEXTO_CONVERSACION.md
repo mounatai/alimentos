@@ -132,6 +132,33 @@
   - Backend local (`server.py` y `server.js`): soporte de `POST /api/history` y CORS actualizado para `POST`.
 - Resultado esperado: elimina bloqueo por 405 en servidores que no aceptan PUT.
 
+
+## Último ajuste
+- Usuario: "Datos guardados localmente..., pero falló la sincronización"
+- Acción: el `alert` de fallo de guardado ahora incluye el detalle técnico exacto (`lastHistorySyncError`) para diagnóstico inmediato.
+
+
+## Último ajuste
+- Usuario: "No se pudo subir (405)" persistente.
+- Acción: se añadió fallback de endpoint para historial:
+  - intenta endpoint actual (`/api/history` o file-mode)
+  - si falla, intenta `http://localhost:3000/api/history`
+  - mantiene fallback de método `PUT -> POST`.
+- Objetivo: funcionar incluso si la web se abre desde un puerto/servidor que no soporta `/api/history`.
+
+
+## Último ajuste
+- Usuario: error persistente `405` en subida de historial.
+- Acción: se separó backend de historial al puerto `3001` para evitar conflicto con servidores de frontend (ej. Live Server en `3000`).
+  - Frontend fallback actualizado a `http://localhost:3001/api/history`.
+  - `server.py` y `server.js` ahora arrancan por defecto en `3001`.
+- Resultado esperado: desaparece `405` por colisión de servidor en el mismo puerto.
+
+
+## Último ajuste
+- Usuario: "quiero un diseño más profesional como pantalla de Apple"
+- Acción: rediseño visual global estilo Apple (glassmorphism limpio, tipografía SF-like, paleta azul/gris premium, tarjetas y tabs refinadas, controles y tablas con acabado más profesional), sin tocar la lógica.
+
 ## Snapshot actual de index.html
 ```html
 <!doctype html>
@@ -143,85 +170,96 @@
     <title>Tracker de alimentos y macros</title>
     <style>
         :root {
-            --olive: #4d9b62;
-            --cream: #f2f8f1;
-            --dark: #183225;
-            --gold: #2f7d4e;
-            --panel: #ffffff;
-            --panel2: #f4fbf5;
-            --line: rgba(24, 50, 37, .16);
-            --text: var(--dark);
-            --muted: rgba(24, 50, 37, .68);
-            --shadow: 0 14px 30px rgba(23, 56, 40, .14);
-            --base-fz: .92em;
+            --primary: #0a84ff;
+            --primary-dark: #0060df;
+            --background: #eef2f7;
+            --surface: rgba(255, 255, 255, .82);
+            --surface-alt: #f8f9fc;
+            --border: rgba(15, 23, 42, .12);
+            --line: rgba(15, 23, 42, .12);
+            --dark: #0f172a;
+            --text: #0f172a;
+            --muted: #64748b;
+            --shadow: 0 20px 40px rgba(15, 23, 42, .10);
+            --radius: 22px;
+            --gold: #0a84ff;
+            --olive: #0a84ff;
+            --cream: #f6f8fc;
+            --head-fz: 1.02rem;
+            --base-fz: .95rem;
             --mini-fz: .86em;
-            --dropdown-scale: .92;
-            --head-fz: 1.08em;
             --kv-gap: 10px;
             --kv-width: 130px;
+            --dropdown-scale: .94;
+            --font-main: "SF Pro Display", "SF Pro Text", "Avenir Next", "Segoe UI", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            background-image:
+                radial-gradient(1100px 620px at -10% -20%, rgba(10, 132, 255, .15), transparent 60%),
+                radial-gradient(900px 540px at 120% -30%, rgba(45, 212, 191, .14), transparent 62%),
+                linear-gradient(180deg, #f6f8fc 0%, #edf2f8 100%);
+            color: var(--text);
+            font-family: var(--font-main);
+            font-size: var(--base-fz);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         html {
             font-size: 16px
         }
 
-        body {
-            margin: 0;
-            font-family: "Avenir Next", "Segoe UI", "Trebuchet MS", Arial, sans-serif;
-            background:
-                radial-gradient(900px 480px at 15% 0%, rgba(77, 155, 98, .22) 0%, transparent 55%),
-                radial-gradient(1000px 520px at 85% 0%, rgba(47, 125, 78, .15) 0%, transparent 58%),
-                var(--cream);
-            color: var(--text);
-            font-size: var(--base-fz);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
         .container {
-            max-width: 1100px;
+            max-width: 1180px;
             margin: 0 auto;
-            padding: 16px
+            padding: 20px
         }
 
         h2 {
             margin: 14px 0 8px;
-            font-size: var(--head-fz)
+            font-size: var(--head-fz);
+            letter-spacing: -.01em;
+            font-weight: 580;
         }
 
         .tabs-header {
             display: flex;
             gap: 12px;
             margin-bottom: 20px;
-            border-bottom: 2px solid var(--line);
+            border: 1px solid var(--line);
             background: rgba(255, 255, 255, .65);
-            border-radius: 14px;
-            padding: 6px 10px 0;
-            backdrop-filter: blur(2px);
+            border-radius: 16px;
+            padding: 8px;
+            backdrop-filter: blur(18px) saturate(160%);
+            box-shadow: 0 8px 26px rgba(15, 23, 42, .08);
         }
 
         .tab-button {
             background: transparent;
-            border: none;
-            padding: 12px 20px;
+            border: 1px solid transparent;
+            padding: 10px 18px;
             cursor: pointer;
             font-size: 1em;
-            font-weight: 700;
+            font-weight: 560;
             color: var(--muted);
-            border-bottom: 3px solid transparent;
-            transition: color .15s, border-color .15s, background .15s;
-            margin-bottom: -2px;
-            border-radius: 10px 10px 0 0;
+            transition: color .2s, border-color .2s, background .2s, box-shadow .2s;
+            border-radius: 12px;
         }
 
         .tab-button.active {
-            color: var(--gold);
-            border-bottom-color: var(--gold);
+            color: var(--dark);
+            background: rgba(255, 255, 255, .94);
+            border-color: rgba(10, 132, 255, .22);
+            box-shadow: 0 6px 18px rgba(10, 132, 255, .14);
         }
 
         .tab-button:hover {
             color: var(--dark);
-            background: rgba(47, 125, 78, .08);
+            background: rgba(255, 255, 255, .72);
         }
 
         .tab-content {
@@ -241,13 +279,19 @@
         }
 
         .card {
-            background: linear-gradient(180deg, var(--panel) 0%, var(--panel2) 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .84) 0%, rgba(255, 255, 255, .72) 100%);
             border: 1px solid var(--line);
-            border-radius: 16px;
-            padding: 16px;
-            min-width: 280px;
-            flex: 1 1 360px;
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
+            padding: 20px;
+            transition: transform .2s, box-shadow .2s, border-color .2s;
+            backdrop-filter: blur(18px) saturate(145%);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 24px 44px rgba(15, 23, 42, .14);
+            border-color: rgba(10, 132, 255, .20);
         }
 
         .card h2 {
@@ -279,9 +323,9 @@
 
         .kv {
             border: 1px solid var(--line);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 10px;
-            background: rgba(77, 155, 98, .08);
+            background: rgba(248, 250, 252, .85);
             font-size: var(--mini-fz);
             width: var(--kv-width);
             box-sizing: border-box;
@@ -297,8 +341,8 @@
             width: 100%;
             padding: 8px 10px;
             border-radius: 10px;
-            border: 1px solid rgba(24, 50, 37, .18);
-            background: #fff;
+            border: 1px solid rgba(15, 23, 42, .14);
+            background: rgba(255, 255, 255, .94);
             color: var(--text);
             outline: none;
             font-size: .98em;
@@ -314,12 +358,13 @@
 
         .kv input[type="number"] {
             -moz-appearance: textfield;
+            appearance: textfield;
         }
 
         .kv input:focus,
         .kv select:focus {
-            border-color: rgba(47, 125, 78, .85);
-            box-shadow: 0 0 0 3px rgba(47, 125, 78, .14);
+            border-color: rgba(10, 132, 255, .55);
+            box-shadow: 0 0 0 3px rgba(10, 132, 255, .18);
         }
 
         .kv label {
@@ -358,7 +403,7 @@
             padding: 7.2px;
             border-radius: 14px;
             min-width: 108px;
-            background: linear-gradient(180deg, #fff 0%, rgba(47, 125, 78, .14) 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .95) 0%, rgba(234, 244, 255, .88) 100%);
             border: 1px solid var(--line);
             box-shadow: var(--shadow);
         }
@@ -401,8 +446,8 @@
 
         th {
             text-align: left;
-            color: rgba(24, 50, 37, .8);
-            background: rgba(77, 155, 98, .12);
+            color: rgba(15, 23, 42, .78);
+            background: rgba(241, 245, 249, .96);
             font-weight: 700;
             font-size: .68em;
             text-transform: uppercase;
@@ -414,7 +459,7 @@
         }
 
         table tbody tr:hover {
-            background: rgba(77, 155, 98, .08)
+            background: rgba(10, 132, 255, .05)
         }
 
         tr:last-child td {
@@ -428,7 +473,7 @@
         .totals td {
             font-weight: 600;
             font-size: .64em;
-            background: rgba(47, 125, 78, .12)
+            background: rgba(10, 132, 255, .08)
         }
 
         .actions {
@@ -451,28 +496,23 @@
         }
 
         button {
-            border: none;
-            background: linear-gradient(180deg, #fff 0%, rgba(47, 125, 78, .14) 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(243, 246, 250, .98));
             color: var(--dark);
-            padding: 8px 10px;
+            border: 1px solid rgba(15, 23, 42, .14);
             border-radius: 12px;
+            padding: 9px 14px;
+            font-size: .95rem;
+            font-weight: 560;
             cursor: pointer;
-            font-weight: 800;
-            font-size: 1.02em;
-            line-height: 1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: background .15s, transform .06s, box-shadow .15s;
-            box-shadow: 0 1px 0 rgba(24, 50, 37, .12), 0 4px 12px rgba(47, 125, 78, .12);
+            transition: background .2s, box-shadow .2s, border-color .2s, transform .08s;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, .08);
         }
 
-        button:active {
-            transform: translateY(1px)
-        }
-
-        button:focus {
-            outline: 2px solid rgba(47, 125, 78, .22)
+        button:hover {
+            background: rgba(255, 255, 255, .98);
+            border-color: rgba(10, 132, 255, .30);
+            box-shadow: 0 10px 18px rgba(10, 132, 255, .18);
+            transform: translateY(-1px);
         }
 
         .btn-add {
@@ -481,10 +521,10 @@
             height: 36px;
             width: 36px;
             padding: 0;
-            background: var(--gold);
+            background: linear-gradient(180deg, #3ba3ff 0%, #0a84ff 100%);
             color: #fff;
             font-weight: 900;
-            border: 1px solid rgba(47, 125, 78, .4);
+            border: 1px solid rgba(10, 132, 255, .45);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -492,7 +532,7 @@
         }
 
         .btn-add:hover {
-            background: #26673f
+            background: linear-gradient(180deg, #3298f5 0%, #006fe0 100%);
         }
 
         .btn-del {
@@ -578,11 +618,12 @@
 
         .graph-slot {
             min-height: 120px;
-            border: 1px dashed var(--line);
+            border: 1px solid var(--line);
             color: var(--muted);
-            font-weight: 700;
+            font-weight: 560;
             padding: 12px;
             box-sizing: border-box;
+            background: rgba(255, 255, 255, .72);
         }
 
         .graph-slot h3 {
@@ -674,7 +715,7 @@
 
         .ring-track {
             fill: none;
-            stroke: rgba(24, 50, 37, .13);
+            stroke: rgba(148, 163, 184, .28);
         }
 
         .ring-progress {
@@ -686,15 +727,15 @@
         }
 
         .ring-prot {
-            stroke: #ef9a9a;
+            stroke: #ff8f87;
         }
 
         .ring-carb {
-            stroke: #a5d6a7;
+            stroke: #8bd9a6;
         }
 
         .ring-fat {
-            stroke: #ffcc80;
+            stroke: #ffc98a;
         }
 
         .rings-center {
@@ -785,6 +826,7 @@
 
         .mealBody input[type="number"] {
             -moz-appearance: textfield;
+            appearance: textfield;
         }
 
         .mealBody input[type="number"]:focus {
@@ -816,9 +858,9 @@
         .history-sync {
             margin-bottom: 12px;
             border: 1px solid var(--line);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 12px;
-            background: #fff;
+            background: rgba(255, 255, 255, .78);
         }
 
         .history-sync-title {
@@ -862,8 +904,8 @@
             max-height: 500px;
             overflow-y: auto;
             border: 1px solid var(--line);
-            border-radius: 12px;
-            background: #fff;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .82);
         }
 
         .history-item {
@@ -881,7 +923,7 @@
         }
 
         .history-item:hover {
-            background: rgba(77, 155, 98, .08);
+            background: rgba(10, 132, 255, .06);
         }
 
         .history-item-info {
@@ -925,7 +967,7 @@
         }
 
         .btn-view:hover {
-            background: rgba(47, 125, 78, .16);
+            background: rgba(10, 132, 255, .14);
         }
 
         .btn-delete {
@@ -941,7 +983,7 @@
         }
 
         .btn-delete:hover {
-            background: rgba(47, 125, 78, .14);
+            background: rgba(255, 69, 58, .11);
             color: #d00;
         }
 
@@ -968,15 +1010,16 @@
         }
 
         .modal-content {
-            background-color: var(--cream);
+            background: rgba(255, 255, 255, .92);
             margin: 10% auto;
             padding: 20px;
             border: 1px solid var(--line);
-            border-radius: 14px;
+            border-radius: 18px;
             max-width: 700px;
             max-height: 80vh;
             overflow-y: auto;
             box-shadow: var(--shadow);
+            backdrop-filter: blur(20px) saturate(160%);
         }
 
         .modal-header {
@@ -1071,7 +1114,7 @@
         }
 
         .food-item:hover {
-            background: rgba(77, 155, 98, .08);
+            background: rgba(10, 132, 255, .06);
         }
 
         .food-item-info {
@@ -1108,7 +1151,7 @@
         }
 
         .btn-edit:hover {
-            background: rgba(47, 125, 78, .16);
+            background: rgba(10, 132, 255, .14);
         }
 
         .form-grid {
@@ -1151,7 +1194,7 @@
         }
 
         .btn-primary {
-            background: var(--gold);
+            background: linear-gradient(180deg, #3ba3ff 0%, #0a84ff 100%);
             color: #fff;
             padding: 10px 16px;
             border-radius: 10px;
@@ -1162,7 +1205,7 @@
         }
 
         .btn-primary:hover {
-            background: #26673f;
+            background: linear-gradient(180deg, #3298f5 0%, #006fe0 100%);
         }
 
         .btn-secondary {
@@ -1177,7 +1220,7 @@
         }
 
         .btn-secondary:hover {
-            background: rgba(77, 155, 98, .12);
+            background: rgba(10, 132, 255, .10);
             color: var(--dark);
         }
 
@@ -1341,14 +1384,18 @@
                 <section class="card rings-slot" aria-label="Progreso diario de macros">
                     <h3>Anillos diarios de macros</h3>
                     <div class="rings-wrap">
-                        <svg class="activity-rings" viewBox="0 0 220 220" aria-label="Progreso de proteínas, carbs y grasas">
+                        <svg class="activity-rings" viewBox="0 0 220 220"
+                            aria-label="Progreso de proteínas, carbs y grasas">
                             <circle class="ring-track" cx="110" cy="110" r="84" stroke-width="16"></circle>
                             <circle class="ring-track" cx="110" cy="110" r="64" stroke-width="16"></circle>
                             <circle class="ring-track" cx="110" cy="110" r="44" stroke-width="16"></circle>
 
-                            <circle id="ringProt" class="ring-progress ring-prot" cx="110" cy="110" r="84" stroke-width="16"></circle>
-                            <circle id="ringCarb" class="ring-progress ring-carb" cx="110" cy="110" r="64" stroke-width="16"></circle>
-                            <circle id="ringFat" class="ring-progress ring-fat" cx="110" cy="110" r="44" stroke-width="16"></circle>
+                            <circle id="ringProt" class="ring-progress ring-prot" cx="110" cy="110" r="84"
+                                stroke-width="16"></circle>
+                            <circle id="ringCarb" class="ring-progress ring-carb" cx="110" cy="110" r="64"
+                                stroke-width="16"></circle>
+                            <circle id="ringFat" class="ring-progress ring-fat" cx="110" cy="110" r="44"
+                                stroke-width="16"></circle>
                         </svg>
                         <div class="rings-center">
                             <div id="ringsCenterValue" class="rings-center-value">0%</div>
@@ -1356,9 +1403,12 @@
                         </div>
                     </div>
                     <div class="rings-legend">
-                        <span><span><i style="background:#ef9a9a;"></i>Proteínas</span><b id="ringProtText">0 / 130g</b></span>
-                        <span><span><i style="background:#a5d6a7;"></i>Carbs</span><b id="ringCarbText">0 / 170g</b></span>
-                        <span><span><i style="background:#ffcc80;"></i>Grasas</span><b id="ringFatText">0 / 50g</b></span>
+                        <span><span><i style="background:#ef9a9a;"></i>Proteínas</span><b id="ringProtText">0 /
+                                130g</b></span>
+                        <span><span><i style="background:#a5d6a7;"></i>Carbs</span><b id="ringCarbText">0 /
+                                170g</b></span>
+                        <span><span><i style="background:#ffcc80;"></i>Grasas</span><b id="ringFatText">0 /
+                                50g</b></span>
                     </div>
                 </section>
             </div>
@@ -1500,7 +1550,8 @@
                 <h2>📋 Historial de guardados</h2>
                 <div class="history-sync">
                     <p class="history-sync-title">☁️ Sincronización automática (móvil + ordenador)</p>
-                    <p class="history-sync-note" id="historySyncNote">El historial se sincroniza automáticamente sin usar campo de enlace ni
+                    <p class="history-sync-note" id="historySyncNote">El historial se sincroniza automáticamente sin
+                        usar campo de enlace ni
                         botones manuales.</p>
                 </div>
                 <div class="history-main">
@@ -1545,7 +1596,6 @@
                     <div class="kv"><input id="deficitReal" type="number" value="0" step="1" readonly /><label
                             for="deficitReal">Déficit real (auto)</label></div>
                 </div>
-                <input id="sexo" type="hidden" value="female" />
                 <div class="grid3" style="margin-top:8px;">
                     <div class="kv"><input id="idealProt" type="number" value="130" step="1" /><label
                             for="idealProt">Ideal Proteínas (g)</label></div>
@@ -1614,7 +1664,8 @@
         let FOODS = [];
         let editingFoodId = null;
         const HISTORY_STORAGE_KEY = 'foodTrackerData';
-        const HISTORY_API_URL = (location.protocol === 'file:' ? 'http://localhost:3000/api/history' : '/api/history');
+        const HISTORY_API_URL = (location.protocol === 'file:' ? 'http://localhost:3001/api/history' : '/api/history');
+        const HISTORY_API_FALLBACK_URL = 'http://localhost:3001/api/history';
         let lastHistorySyncError = '';
 
         function round1(n) { return Math.round((n + Number.EPSILON) * 10) / 10; }
@@ -1773,9 +1824,17 @@
                 return `No hay conexión con el servidor (${HISTORY_API_URL}). Inicia el servidor con: python3 server.py`;
             }
             if (raw.includes('(405)')) {
-                return `El servidor actual no permite guardar historial (405). Abre esta web con: python3 server.py y entra a http://localhost:3000`;
+                return `El servidor actual no permite guardar historial (405). Inicia backend con: python3 server.py (usa puerto 3001).`;
             }
             return raw;
+        }
+
+        function getHistoryApiCandidates() {
+            const urls = [HISTORY_API_URL];
+            if (!urls.includes(HISTORY_API_FALLBACK_URL)) {
+                urls.push(HISTORY_API_FALLBACK_URL);
+            }
+            return urls;
         }
 
         async function syncHistoryAcrossDevices() {
@@ -1808,49 +1867,59 @@
                 history: loadHistoryFromStorage(),
                 updatedAt: new Date().toISOString()
             };
-            try {
-                let res = await fetch(HISTORY_API_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (res.status === 405) {
-                    // Fallback for servers that only allow POST.
-                    res = await fetch(HISTORY_API_URL, {
-                        method: 'POST',
+            const candidates = getHistoryApiCandidates();
+            let lastErr = null;
+            for (const endpoint of candidates) {
+                try {
+                    let res = await fetch(endpoint, {
+                        method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
+                    if (res.status === 405) {
+                        // Fallback for servers that only allow POST.
+                        res = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                    }
+                    if (!res.ok) throw new Error(`No se pudo subir (${res.status}) en ${endpoint}`);
+                    if (!silent) alert('✓ Historial subido.');
+                    lastHistorySyncError = '';
+                    return true;
+                } catch (e) {
+                    lastErr = e;
                 }
-                if (!res.ok) throw new Error(`No se pudo subir (${res.status})`);
-                if (!silent) alert('✓ Historial subido.');
-                lastHistorySyncError = '';
-                return true;
-            } catch (e) {
-                lastHistorySyncError = formatHistorySyncError(e);
-                if (!silent) alert(`No se pudo subir el historial. Detalle: ${e?.message || 'sin conexión al servidor'}`);
-                return false;
             }
+            lastHistorySyncError = formatHistorySyncError(lastErr);
+            if (!silent) alert(`No se pudo subir el historial. Detalle: ${lastHistorySyncError}`);
+            return false;
         }
 
         async function pullHistoryFromCloud(silent = false) {
-            try {
-                const res = await fetch(HISTORY_API_URL, { cache: 'no-store' });
-                if (!res.ok) throw new Error(`No se pudo descargar (${res.status})`);
-                const payload = await res.json();
-                const cloudHistory = Array.isArray(payload) ? payload : (Array.isArray(payload?.history) ? payload.history : []);
-                if (!Array.isArray(cloudHistory)) throw new Error('Formato inválido');
-                saveHistoryToStorage(cloudHistory);
-                renderHistoryList();
-                renderHistoryChart();
-                if (!silent) alert('✓ Historial descargado.');
-                lastHistorySyncError = '';
-                return true;
-            } catch (e) {
-                lastHistorySyncError = formatHistorySyncError(e);
-                if (!silent) alert(`No se pudo descargar el historial. Detalle: ${e?.message || 'sin conexión al servidor'}`);
-                return false;
+            const candidates = getHistoryApiCandidates();
+            let lastErr = null;
+            for (const endpoint of candidates) {
+                try {
+                    const res = await fetch(endpoint, { cache: 'no-store' });
+                    if (!res.ok) throw new Error(`No se pudo descargar (${res.status}) en ${endpoint}`);
+                    const payload = await res.json();
+                    const cloudHistory = Array.isArray(payload) ? payload : (Array.isArray(payload?.history) ? payload.history : []);
+                    if (!Array.isArray(cloudHistory)) throw new Error('Formato inválido');
+                    saveHistoryToStorage(cloudHistory);
+                    renderHistoryList();
+                    renderHistoryChart();
+                    if (!silent) alert('✓ Historial descargado.');
+                    lastHistorySyncError = '';
+                    return true;
+                } catch (e) {
+                    lastErr = e;
+                }
             }
+            lastHistorySyncError = formatHistorySyncError(lastErr);
+            if (!silent) alert(`No se pudo descargar el historial. Detalle: ${lastHistorySyncError}`);
+            return false;
         }
 
 
@@ -2179,7 +2248,7 @@
                 alert(`✓ Datos guardados: ${dateStr} ${timeStr}`);
             } else {
                 setHistorySyncNote(`Guardado local ok, pero no se pudo subir al servidor. ${lastHistorySyncError}`, true);
-                alert(`Datos guardados localmente (${dateStr} ${timeStr}), pero falló la sincronización.`);
+                alert(`Datos guardados localmente (${dateStr} ${timeStr}), pero falló la sincronización.\nDetalle: ${lastHistorySyncError || 'sin detalle de error'}`);
             }
         }
 
